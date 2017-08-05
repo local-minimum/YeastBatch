@@ -155,8 +155,11 @@ public class Tile : MonoBehaviour {
             int migration = (sourcePop.Size - targetPop.Size) / migrationFraction;
             if (migration > 0)
             {
-                sourcePop.SetSize(sourcePop.Size - migration);
-                targetPop.SetSize(targetPop.Size + migration);
+                int realizedSample;
+                var subPop = sourcePop.GetDataSample(migration, out realizedSample);
+
+                sourcePop.RemoveMigrants(subPop);
+                targetPop.AddMigrants(subPop);
             }
         }
     }

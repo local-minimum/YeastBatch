@@ -30,6 +30,14 @@ public class PlayerPopulationData {
         waste += other.waste;
         damage += other.damage;
     }
+
+    public void Remove(PlayerPopulationData other)
+    {
+        populationSize = Mathf.Max(0, populationSize - other.populationSize);
+        energy = Mathf.Max(0, energy - other.energy);
+        waste = Mathf.Max(0, waste - other.waste);
+        damage = Mathf.Max(0, damage - other.damage);
+    }
 }
 
 public class PlayerPopulation : AbsNutrientState {
@@ -70,6 +78,16 @@ public class PlayerPopulation : AbsNutrientState {
         {
             return data.populationSize;
         }
+    }
+
+    public void AddMigrants(PlayerPopulationData migrants)
+    {
+        data.Add(migrants);
+    }
+
+    public void RemoveMigrants(PlayerPopulationData migrants)
+    {
+        data.Remove(migrants);
     }
 
     public void SetSize(int size)
@@ -167,7 +185,7 @@ public class PlayerPopulation : AbsNutrientState {
         importN = 0;
     }
 
-    int componentsToWaste = 4;
+
     void MakeWaste()
     {
         MediaNutrient C = GetNutrient(Nutrients.C);
