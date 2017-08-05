@@ -49,11 +49,40 @@ public class Plate : MonoBehaviour {
 
     public void InitiateBatch()
     {
+        int totalSize;
+        int[] totalSizes = TotalPlayerPopulations(out totalSize);
+        int[] samples = GetSampleSizes(totalSizes, totalSize);
 
     }
 
-    [SerializeField] Tile startTile;
+    public int[] GetSampleSizes(int[] totalSizes, int totalSize)
+    {
+        float fraction = (startPop * nPlayers) / totalSize;
+        int[] sample = new int[nPlayers];
+        for (int i = 0; i < nPlayers; i++)
+        {
+            sample[i] = Mathf.FloorToInt(fraction * totalSizes[i]) + Random.Range(-startPop / 10, startPop / 10);
+        }
+        return sample;
+    }
 
+    public int[] TotalPlayerPopulations(out int totalSize)
+    {
+        totalSize = 0;
+        int[] totalSizes = new int[nPlayers];
+        foreach (Tile tile in GetComponentsInChildren<Tile>())
+        {
+            for (int pId = 0; pId < nPlayers; pId++)
+            {
+                totalSizes[pId] += tile.GetPopulationSize(pId);
+                totalSize += totalSizes[pId];
+            }
+        }
+        return totalSizes;
+    }
+
+    [SerializeField] Tile startTile;
+    int nPlayers;
     public void StartGame(int nPlayers)
     {
         foreach (Tile tile in GetComponentsInChildren<Tile>())
@@ -64,6 +93,7 @@ public class Plate : MonoBehaviour {
                 tile.SetPopulationSizeAndEnergy(0, isStart ? startPop : 0, isStart ? startEnergy : 0);
             }
         }
+        this.nPlayers = nPlayers;
     }
 
     private void Start()
