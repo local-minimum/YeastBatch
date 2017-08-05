@@ -53,9 +53,52 @@ public class Plate : MonoBehaviour {
         int[] totalSizes = TotalPlayerPopulations(out totalSize);
         int[] samples = GetSampleSizes(totalSizes, totalSize);
 
+        for (int i = 0; i < nPlayers; i++)
+        {
+            PlayerPopulationData pop = GetReplatePopulation(i, samples[i]);
+            startTile.SetPopulationFromData(i, pop);
+        }
+
+        RemovePopulationsFromNonStart();
     }
 
-    public int[] GetSampleSizes(int[] totalSizes, int totalSize)
+    void RemovePopulationsFromNonStart()
+    {
+        foreach (Tile tile in GetComponentsInChildren<Tile>())
+        {
+            if (tile == startTile)
+            {
+                continue;
+            }
+
+            tile.ClearPopulations();
+        }
+    }
+
+    PlayerPopulationData GetReplatePopulation(int player, int sampleSize)
+    {
+        PlayerPopulationData pop = new PlayerPopulationData();
+        float perTile = sampleSize / 16f;
+        int soFar = 0;
+        Tile[] tiles = GetComponentsInChildren<Tile>();
+        while (soFar < sampleSize)
+        {
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                int sample = Mathf.Min(Mathf.FloorToInt(perTile), sampleSize - soFar);
+                int resultingSample;
+                pop.Add(tiles[i].GetSubSample(player, sample, out resultingSample));
+                soFar += resultingSample;
+                if (soFar >= sampleSize)
+                {
+                    break;
+                }
+            }
+        }
+        return pop;
+    }
+    
+    int[] GetSampleSizes(int[] totalSizes, int totalSize)
     {
         float fraction = (startPop * nPlayers) / totalSize;
         int[] sample = new int[nPlayers];

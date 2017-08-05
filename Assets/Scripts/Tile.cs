@@ -30,6 +30,33 @@ public class Tile : MonoBehaviour {
         return pop ? pop.Size : 0;
     }
 
+    public PlayerPopulationData GetSubSample(int playerId, int sample, out int realizedSample)
+    {
+        PlayerPopulation pop = GetPlayerPopulation(playerId);
+        if (pop)
+        {
+            return pop.GetDataSample(sample, out realizedSample);
+        }
+        realizedSample = 0;
+        return null;
+
+    }
+
+    public void SetPopulationFromData(int playerId, PlayerPopulationData data)
+    {
+        PlayerPopulation pop = GetPlayerPopulation(playerId);
+        pop.Clear();
+        pop.SetFrom(data);
+    }
+
+    public void ClearPopulations()
+    {
+        foreach (PlayerPopulation pop in playerPopulations)
+        {
+            pop.Clear();
+        }
+    }
+
     public void SetPopulationSizeAndEnergy(int playerId, int size, int energy)
     {
         PlayerPopulation pop = GetPlayerPopulation(playerId);

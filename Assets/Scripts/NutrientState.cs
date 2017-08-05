@@ -40,6 +40,11 @@ public class MediaNutrient
         }
     }
 
+    public void Empty()
+    {
+        currentValue = 0;
+    }
+
     public void Saturate()
     {
         currentValue = maxValue;

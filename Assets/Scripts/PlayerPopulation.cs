@@ -2,34 +2,84 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public class PlayerPopulationData {
+    public int energy = 0;
+
+    public int populationSize = 0;
+    public int waste = 0;
+    public int damage = 0;
+
+    public PlayerPopulationData SubSample(int sample, out int realizedSample)
+    {
+        realizedSample = Mathf.Min(sample, populationSize);
+        float fraction = sample / populationSize;
+        PlayerPopulationData sampleData = new PlayerPopulationData();
+        sampleData.populationSize = sample;
+        sampleData.energy = Mathf.FloorToInt(fraction * energy);
+        sampleData.waste = Mathf.FloorToInt(fraction * waste);
+        sampleData.damage = Mathf.FloorToInt(fraction * damage);
+
+        return sampleData;
+    }
+
+    public void Add(PlayerPopulationData other)
+    {
+        populationSize += other.populationSize;
+        energy += other.energy;
+        waste += other.waste;
+        damage += other.damage;
+    }
+}
+
 public class PlayerPopulation : AbsNutrientState {
 
     public int playerId;
+    PlayerPopulationData data = new PlayerPopulationData();
 
-    int energy = 0;
-    
-    int populationSize = 0;
-    int waste = 0;
-    int damage = 0;
+    public PlayerPopulationData GetDataSample(int sample, out int realizedSample)
+    {
+        return data.SubSample(sample, out realizedSample);
+    }
 
     Tile tile;
+
+    public void Clear()
+    {
+        data.populationSize = 0;
+        data.waste = 0;
+        data.energy = 0;
+        data.damage = 0;
+        GetNutrient(Nutrients.AA).Empty();
+        GetNutrient(Nutrients.C).Empty();
+        GetNutrient(Nutrients.N).Empty();
+
+    }
+
+    public void SetFrom(PlayerPopulationData other)
+    {
+        data.damage = other.waste;
+        data.populationSize = other.populationSize;
+        data.waste = other.waste;
+        data.energy = other.energy;
+    }
 
     public int Size
     {
         get
         {
-            return populationSize;
+            return data.populationSize;
         }
     }
 
     public void SetSize(int size)
     {
-        populationSize = size;
+        data.populationSize = size;
     }
 
     public void SetEnergy(int energy)
     {
-        this.energy = energy;
+        data.energy = energy;
     }
 
     public int PlanningEnergy
@@ -48,9 +98,9 @@ public class PlayerPopulation : AbsNutrientState {
             energy += param;
             param = 0;
         }
-        if (this.energy < PlanningEnergy)
+        if (data.energy < PlanningEnergy)
         {
-            int diff = this.energy - PlanningEnergy;
+            int diff = data.energy - PlanningEnergy;
             energy += diff;
             param += diff;
         }
@@ -105,9 +155,9 @@ public class PlayerPopulation : AbsNutrientState {
     {
         CalculateDamage();
 
-        energy = Mathf.Clamp(energy - damage, 0, populationSize);
-        populationSize += energy / 10;
-        energy /= 4;
+        data.energy = Mathf.Clamp(data.energy - data.damage, 0, data.populationSize);
+        data.populationSize += data.energy / 10;
+        data.energy /= 4;
 
         MakeWaste();
 
@@ -121,18 +171,18 @@ public class PlayerPopulation : AbsNutrientState {
     void MakeWaste()
     {
         MediaNutrient C = GetNutrient(Nutrients.C);
-        waste += C.Extract(C.CurrentValue / 4);
+        data.waste += C.Extract(C.CurrentValue / 4);
 
         MediaNutrient N = GetNutrient(Nutrients.N);
-        waste += N.Extract(C.CurrentValue / 3);
+        data.waste += N.Extract(C.CurrentValue / 3);
 
         MediaNutrient AA = GetNutrient(Nutrients.AA);
-        waste += AA.Extract(AA.CurrentValue / 2);
+        data.waste += AA.Extract(AA.CurrentValue / 2);
     }
 
     void ExportWaste()
     {
-        waste = Mathf.Max(0, waste - export);
+        data.waste = Mathf.Max(0, data.waste - export);
         export = 0;
     }
 
@@ -140,9 +190,9 @@ public class PlayerPopulation : AbsNutrientState {
 
     void CalculateDamage()
     {
-        damage += waste / wasteToDamage;
-        damage += populationSize / 100;
-        damage = Mathf.Max(0, damage - maintenance);
+        data.damage += data.waste / wasteToDamage;
+        data.damage += data.populationSize / 100;
+        data.damage = Mathf.Max(0, data.damage - maintenance);
         maintenance = 0;
     }
 
@@ -161,7 +211,7 @@ public class PlayerPopulation : AbsNutrientState {
         N.Extract(production * 3);
         AA.Extract(production);
 
-        energy += production;        
+        data.energy += production;        
     }
 
     void ImportNutrients()
@@ -173,7 +223,7 @@ public class PlayerPopulation : AbsNutrientState {
 
     void ImportNutrient(MediaNutrient nutrient, ref int energy)
     {
-        int extracted = tile.nutrientState.Extract(nutrient.nutrient, energy * populationSize / 80);
+        int extracted = tile.nutrientState.Extract(nutrient.nutrient, energy * (1 + data.populationSize / 80));
         int surplus;
         nutrient.Deposit(extracted, out surplus);
         tile.nutrientState.Deposit(nutrient.nutrient, surplus);
