@@ -44,9 +44,30 @@ public class Plate : MonoBehaviour {
 
     [SerializeField]
     int startPop = 20;
-    public void InitiateBatch(int nPlayers)
+    [SerializeField]
+    int startEnergy = 200;
+
+    public void InitiateBatch()
     {
 
     }
-    
+
+    [SerializeField] Tile startTile;
+
+    public void StartGame(int nPlayers)
+    {
+        foreach (Tile tile in GetComponentsInChildren<Tile>())
+        {
+            bool isStart = tile == startTile;
+            for (int pId = 0; pId < nPlayers; pId++)
+            {
+                tile.SetPopulationSizeAndEnergy(0, isStart ? startPop : 0, isStart ? startEnergy : 0);
+            }
+        }
+    }
+
+    private void Start()
+    {
+        StartGame(2);
+    }
 }

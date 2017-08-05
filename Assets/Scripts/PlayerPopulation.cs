@@ -7,11 +7,38 @@ public class PlayerPopulation : AbsNutrientState {
     public int playerId;
 
     int energy = 0;
+    
     int populationSize = 0;
     int waste = 0;
     int damage = 0;
 
     Tile tile;
+
+    public int Size
+    {
+        get
+        {
+            return populationSize;
+        }
+    }
+
+    public void SetSize(int size)
+    {
+        populationSize = size;
+    }
+
+    public void SetEnergy(int energy)
+    {
+        this.energy = energy;
+    }
+
+    public int PlanningEnergy
+    {
+        get
+        {
+            return importAA + importC + importN + export;
+        }
+    }
 
     int Budget(ref int param, int energy)
     {
@@ -21,6 +48,13 @@ public class PlayerPopulation : AbsNutrientState {
             energy += param;
             param = 0;
         }
+        if (this.energy < PlanningEnergy)
+        {
+            int diff = this.energy - PlanningEnergy;
+            energy += diff;
+            param += diff;
+        }
+        
         return energy;
     }
 

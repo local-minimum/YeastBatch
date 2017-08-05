@@ -10,6 +10,39 @@ public class Tile : MonoBehaviour {
     [HideInInspector]
     public NutrientState nutrientState;
 
+    List<PlayerPopulation> playerPopulations = new List<PlayerPopulation>();
+
+    PlayerPopulation GetPlayerPopulation(int playerId)
+    {
+        for (int i = 0, l = playerPopulations.Count; i < l; i++)
+        {
+            if (playerPopulations[i].playerId == playerId)
+            {
+                return playerPopulations[i];
+            }
+        }
+        return null;
+    }
+
+    public int GetPopulationSize(int playerId)
+    {
+        PlayerPopulation pop = GetPlayerPopulation(playerId);
+        return pop ? pop.Size : 0;
+    }
+
+    public void SetPopulationSizeAndEnergy(int playerId, int size, int energy)
+    {
+        PlayerPopulation pop = GetPlayerPopulation(playerId);
+        if (pop == null)
+        {
+            pop = gameObject.AddComponent<PlayerPopulation>();
+            playerPopulations.Add(pop);
+        }
+
+        pop.SetSize(size);
+        pop.SetEnergy(energy);
+    }
+
     private void Start()
     {
         brick = GetComponentInChildren<Brick>();
@@ -51,6 +84,18 @@ public class Tile : MonoBehaviour {
         this.neighbours = neighbours.ToArray();
     }
 
+    bool HasNeighbour(Tile other)
+    {
+        for (int i = 0; i < neighbours.Length; i++)
+        {
+            if (neighbours[i] == other)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void SetMediaComposition(NutrientState media)
     {
         if (nutrientState == null)
@@ -64,5 +109,28 @@ public class Tile : MonoBehaviour {
     public void SaturateMedia()
     {
         nutrientState.Saturate();
+    }
+
+    [SerializeField]
+    int migrationFraction = 6;
+
+    public void Migrate(Tile destination)
+    {
+        if (!HasNeighbour(destination))
+        {
+            throw new System.ArgumentException("Destination is not a neighbour");
+        }
+
+        for (int pId = 0, l = playerPopulations.Count; pId < l; pId++)
+        {
+            PlayerPopulation sourcePop = GetPlayerPopulation(pId);
+            PlayerPopulation targetPop = destination.GetPlayerPopulation(pId);
+            int migration = (sourcePop.Size - targetPop.Size) / migrationFraction;
+            if (migration > 0)
+            {
+                sourcePop.SetSize(sourcePop.Size - migration);
+                targetPop.SetSize(targetPop.Size + migration);
+            }
+        }
     }
 }
