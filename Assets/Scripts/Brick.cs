@@ -8,4 +8,21 @@ public class Brick : MonoBehaviour {
     {
 
     }
+
+    Tile tile;
+
+    private void Start()
+    {
+        tile = GetComponentInParent<Tile>();
+    }
+
+    private void OnMouseEnter()
+    {
+        
+    }
+
+    private void OnMouseExit()
+    {
+        
+    }
 }
