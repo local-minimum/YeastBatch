@@ -1,8 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TileCanvas : MonoBehaviour {
+
+    [SerializeField]
+    Button[] buttons;
 
     [SerializeField]
     GameObject[] helpTexts;
@@ -12,12 +16,29 @@ public class TileCanvas : MonoBehaviour {
 
     int activeControl = -1;
 
-    public void ShowHoverText(GameObject help)
+    int GetButtonIndex(Button button)
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i] == button)
+            {
+                return i;
+            }
+        }
+        throw new System.ArgumentException("Button not known: " + button);
+    }
+
+    public void ShowHoverText(Button button)
+    {
+        int idx = GetButtonIndex(button);
+        ShowHoverText(idx);       
+    }
+
+    void ShowHoverText(int idx)
     {
         for (int i=0; i<helpTexts.Length; i++)
         {
-            bool isThis = helpTexts[i] == help;
-            helpTexts[i].SetActive(isThis && (i != activeControl));
+            helpTexts[i].SetActive((i == idx) && (i != activeControl));
         }
     }
 
@@ -30,11 +51,26 @@ public class TileCanvas : MonoBehaviour {
 
     }
 
-    public void SetActiveControl(GameObject control)
+    public void HideControls()
+    {
+        for (int i = 0; i<controls.Length; i++)
+        {
+            controls[i].SetActive(false);
+        }
+        activeControl = -1;
+    }
+
+    public void SetActiveControl(Button button)
+    {
+        int idx = GetButtonIndex(button);
+        SetActiveControl(idx);
+    }
+
+    public void SetActiveControl(int index)
     {
         for (int i = 0; i < controls.Length; i++)
         {
-            if (controls[i] == control)
+            if (i == index)
             {
                 activeControl = i;
                 controls[i].SetActive(true);
@@ -44,5 +80,11 @@ public class TileCanvas : MonoBehaviour {
                 controls[i].SetActive(false);
             }
         }
+    }
+
+    private void Start()
+    {
+        HideHelpTexts();
+        HideControls();        
     }
 }
