@@ -18,7 +18,7 @@ public class Brick : MonoBehaviour {
 
     private void OnMouseEnter()
     {
-        
+        TileCanvas.ShowFor(tile);
     }
 
     private void OnMouseExit()

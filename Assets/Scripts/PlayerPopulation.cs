@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
+public enum ActionMode{Metabolism, Procreation};
 
 public class PlayerPopulationData {
+
     public int energy = 0;
 
     public int populationSize = 0;
@@ -41,6 +44,8 @@ public class PlayerPopulationData {
 }
 
 public class PlayerPopulation : AbsNutrientState {
+    enum MetabolismOptions { ImportAA, ImportN, ImportC, ExportWaste, Maintenance };
+    public ActionMode activeAction;
 
     public int playerId;
     PlayerPopulationData data = new PlayerPopulationData();
@@ -104,49 +109,170 @@ public class PlayerPopulation : AbsNutrientState {
     {
         get
         {
-            return importAA + importC + importN + export;
+            return importAA + importC + importN + export + maintenance;
         }
     }
 
-    int Budget(ref int param, int energy)
+    public int RemainingEnergy
     {
-        param += energy;
-        if (param < 0)
+        get
         {
-            energy += param;
-            param = 0;
+            return data.energy - PlanningEnergy;
         }
-        if (data.energy < PlanningEnergy)
+    }
+
+    public int TotalEnergy
+    {
+        get
+        {
+            return data.energy;
+        }
+    }
+
+    int Budget(ref int planned, int requested, bool clampSelf  = true)
+    {
+        if (requested < 0)
+        {
+            requested = 0;
+            planned = 0;
+        } else if (requested > data.energy)
+        {
+            requested = data.energy;
+            planned = 0;
+        } else
+        {
+            planned = requested;
+        }
+
+        if (clampSelf && data.energy < PlanningEnergy)
         {
             int diff = data.energy - PlanningEnergy;
-            energy += diff;
-            param += diff;
+            requested += diff;
+            planned += diff;
         }
         
-        return energy;
+        return requested;
+    }
+
+    void ClampOthers(MetabolismOptions me)
+    {
+        var values = System.Enum.GetNames(typeof(MetabolismOptions));
+        var myName = System.Enum.GetName(typeof(MetabolismOptions), me);
+        var otherNames = values.Where(e => e != myName).ToArray();
+        int costOthers = 0;
+        List<int> costPerOther = new List<int>();
+        int costMe = 0;
+        foreach (var item in values)
+        {
+            if (item == myName)
+            {
+                costMe = GetPlanningCostOf(item);
+            } else
+            {
+                int costOther = GetPlanningCostOf(item);
+                costOthers += costOther;
+                costPerOther.Add(costOther);
+            }
+        }
+
+        int surplus = (costMe + costOthers) - data.energy;
+        while (surplus > 0)
+        {
+            //Recursive larger and zero test too
+            int costPerItem = Mathf.CeilToInt(surplus / costPerOther.Count(e => e > 0));
+            for (int i = 0; i<costPerOther.Count; i++)
+            {
+                int removal = Mathf.Min(costPerOther[i], costPerItem);
+                surplus--;
+                ReducePlanningOf(otherNames[i], removal);
+            }        
+        }
+    }
+
+
+    public int GetPlanningCostOf(string name)
+    {
+        switch (name)
+        {
+            case "ImportAA":
+                return importAA;
+            case "ImportC":
+                return importC;
+            case "ImportN":
+                return importN;
+            case "ExportWaste":
+            case "Export":
+                return export;
+            case "Maintenance":
+                return maintenance;
+            default:
+                throw new System.ArgumentException("Unknown planning cost: " + name);
+        }
+    }
+
+    void ReducePlanningOf(string name, int ammount)
+    {
+        switch (name)
+        {
+            case "ImportAA":
+                importAA -= ammount;
+                break;
+            case "ImportC":
+                importC -= ammount;
+                break;
+            case "ImportN":
+                importN -= ammount;
+                break;
+            case "ExportWaste":
+                export -= ammount;
+                break;
+            case "Maintenance":
+                maintenance -= ammount;
+                break;
+            default:
+                throw new System.ArgumentException("Unknown planning cost item: " + name);
+        }
     }
 
     int importC;
     int importAA;
     int importN;
-    public int PlanImport(Nutrients nutrient, int energy)
+
+    public enum ClampMode { Self, Others}
+    public int PlanImport(Nutrients nutrient, int requested, ClampMode mode)
     {
+        int allowed;
+        MetabolismOptions meOp;
         if (nutrient == Nutrients.AA)
         {            
-            return Budget(ref importAA, energy);
+             allowed = Budget(ref importAA, requested, mode == ClampMode.Self);
+            meOp = MetabolismOptions.ImportAA;
         } else if (nutrient == Nutrients.C)
         {
-            return Budget(ref importC, energy);
+            allowed = Budget(ref importC, requested, mode == ClampMode.Self);
+            meOp = MetabolismOptions.ImportC;
         } else
         {
-            return Budget(ref importN, energy);
+            allowed = Budget(ref importN, requested, mode == ClampMode.Self);
+            meOp = MetabolismOptions.ImportN;
         }
+
+        if (mode == ClampMode.Others)
+        {
+            ClampOthers(meOp);
+        }
+        return allowed;
     }
 
     int export;
-    public int PlanExportWaste(int energy)
+    public int PlanExportWaste(int requested, ClampMode mode)
     {
-        return Budget(ref export, energy);
+        int allowed = Budget(ref export, requested, mode == ClampMode.Self);
+        if (mode == ClampMode.Others)
+        {
+            ClampOthers(MetabolismOptions.ExportWaste);
+        }
+        return allowed;
     }
 
     public void Metabolize()
@@ -164,9 +290,14 @@ public class PlayerPopulation : AbsNutrientState {
 
     int maintenance;
 
-    public int PlanMaintenance(int energy)
+    public int PlanMaintenance(int requested, ClampMode mode)
     {
-        return Budget(ref maintenance, energy);
+        int allowed = Budget(ref maintenance, requested, mode == ClampMode.Self);
+        if (mode == ClampMode.Others)
+        {
+            ClampOthers(MetabolismOptions.Maintenance);
+        }
+        return allowed;
     }
 
     public void Procreate()

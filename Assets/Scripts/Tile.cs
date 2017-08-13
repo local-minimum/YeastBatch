@@ -12,7 +12,7 @@ public class Tile : MonoBehaviour {
 
     List<PlayerPopulation> playerPopulations = new List<PlayerPopulation>();
 
-    PlayerPopulation GetPlayerPopulation(int playerId)
+    public PlayerPopulation GetPlayerPopulation(int playerId)
     {
         for (int i = 0, l = playerPopulations.Count; i < l; i++)
         {
@@ -28,6 +28,12 @@ public class Tile : MonoBehaviour {
     {
         PlayerPopulation pop = GetPlayerPopulation(playerId);
         return pop ? pop.Size : 0;
+    }
+
+    public bool HasPopulation(int playerId)
+    {
+        PlayerPopulation pop = GetPlayerPopulation(playerId);
+        return pop ? pop.Size > 0 : false;
     }
 
     public PlayerPopulationData GetSubSample(int playerId, int sample, out int realizedSample)
@@ -74,6 +80,7 @@ public class Tile : MonoBehaviour {
     {
         brick = GetComponentInChildren<Brick>();
         nutrientState = GetComponent<NutrientState>();
+        SetNeighbours();
     }
 
     [SerializeField]
