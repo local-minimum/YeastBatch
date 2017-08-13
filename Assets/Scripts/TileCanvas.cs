@@ -30,12 +30,12 @@ public class TileCanvas : MonoBehaviour {
 
     private void OnEnable()
     {
-        _canvas = this;    
+        _canvas = this;
     }
 
     private void OnDestroy()
     {
-        _canvas = null;    
+        _canvas = null;
     }
 
     [SerializeField]
@@ -67,12 +67,12 @@ public class TileCanvas : MonoBehaviour {
     public void ShowHoverText(Button button)
     {
         int idx = GetButtonIndex(button);
-        ShowHoverText(idx);       
+        ShowHoverText(idx);
     }
 
     void ShowHoverText(int idx)
     {
-        for (int i=0; i<helpTexts.Length; i++)
+        for (int i = 0; i < helpTexts.Length; i++)
         {
             helpTexts[i].SetActive((i == idx) && (i != activeControl));
         }
@@ -88,7 +88,7 @@ public class TileCanvas : MonoBehaviour {
 
     public void HideControls()
     {
-        for (int i = 0; i<controls.Length; i++)
+        for (int i = 0; i < controls.Length; i++)
         {
             controls[i].SetActive(false);
         }
@@ -121,7 +121,7 @@ public class TileCanvas : MonoBehaviour {
     {
 
         HideHelpTexts();
-        HideControls();        
+        HideControls();
     }
 
     public void LetsGetItOn()
@@ -136,7 +136,30 @@ public class TileCanvas : MonoBehaviour {
         HideCanvas();
     }
 
-    void HideCanvas()
+    public void DelayHiding() {
+        if (!isDelayHiding && gameObject.activeSelf)
+        {
+            StartCoroutine(_DelayHiding());
+        }
+    }
+
+    public void AbortDelayHiding()
+    {
+        isDelayHiding = false; 
+    }
+
+    bool isDelayHiding = false;
+    IEnumerator<WaitForSeconds> _DelayHiding() {
+        isDelayHiding = true;
+        yield return new WaitForSeconds(0.5f);
+        if (isDelayHiding)
+        {
+            HideCanvas();
+            isDelayHiding = false;
+        }
+    }
+
+    public void HideCanvas()
     {
         gameObject.SetActive(false);
         _editingPop = null;
