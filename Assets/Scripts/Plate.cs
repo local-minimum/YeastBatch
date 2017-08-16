@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void PlayerTurn(Player player, int pId);
+
 public class Plate : MonoBehaviour {
+
+    public static PlayerTurn OnPlayerTurn;
 
     [SerializeField]
     NutrientState maxMedia;
@@ -137,10 +141,19 @@ public class Plate : MonoBehaviour {
             }
         }
         this.nPlayers = nPlayers;
+        if (OnPlayerTurn != null)
+        {
+            OnPlayerTurn(players[0], activePlayer);
+
+        }
     }
+
+    int activePlayer;
+    Player[] players;
 
     private void Start()
     {
+        players = Player.GetPlayers();
         StartGame(2);
     }
 }
