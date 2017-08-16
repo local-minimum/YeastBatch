@@ -9,6 +9,8 @@ public class Brick : MonoBehaviour {
 
     }
 
+    [SerializeField] SpriteRenderer popRend;
+
     Tile tile;
 
     private void Start()
@@ -25,4 +27,24 @@ public class Brick : MonoBehaviour {
     {
         
     }
-}
+
+    private void OnEnable()
+    {
+        Plate.OnPlayerTurn += HandlePlayerTurn;
+    }
+
+    private void OnDisable()
+    {
+        Plate.OnPlayerTurn -= HandlePlayerTurn;
+    }
+
+    private void OnDestroy()
+    {
+        Plate.OnPlayerTurn -= HandlePlayerTurn;
+    }
+
+    private void HandlePlayerTurn(Player player, int playerId)
+    {
+        popRend.color = player.playerColor;
+    }
+    }

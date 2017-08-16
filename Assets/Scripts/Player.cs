@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 
     public static Player[] GetPlayers()
     {
-        return FindObjectOfType<Player>().transform.parent.GetComponentsInChildren<Player>();
+        return FindObjectOfType<Player>().transform.GetComponents<Player>();
     }
 
     public PlayerType playerType;
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour {
 
     public string GetBoringPlayerName()
     {
-        var players = transform.parent.GetComponentsInChildren<Player>();
+        var players = transform.GetComponents<Player>();
         for (int i=0; i < players.Length; i++)
         {
             if (players[i] == this)

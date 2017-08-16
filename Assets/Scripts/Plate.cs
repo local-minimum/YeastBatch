@@ -141,10 +141,28 @@ public class Plate : MonoBehaviour {
             }
         }
         this.nPlayers = nPlayers;
+        SetPlayerTurn(0);
+    }
+
+    void SetPlayerTurn(int pId)
+    {
         if (OnPlayerTurn != null)
         {
-            OnPlayerTurn(players[0], activePlayer);
+            OnPlayerTurn(players[activePlayer], activePlayer);
 
+        }
+    }
+
+    public void EndTurn()
+    {
+        activePlayer++;
+        if (activePlayer < nPlayers)
+        {
+            SetPlayerTurn(activePlayer);
+        } else
+        {
+            //TODO: Run through actions
+            activePlayer = 0;
         }
     }
 

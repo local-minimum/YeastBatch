@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class UIPlayer : MonoBehaviour {
 
-    Text playerNameUI;
-    Image playerColorUI;
+    [SerializeField] Text playerNameUI;
+    [SerializeField] Image playerColorUI;
 
     private void OnEnable()
     {
