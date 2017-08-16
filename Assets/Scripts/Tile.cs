@@ -36,10 +36,16 @@ public class Tile : MonoBehaviour {
         return pop ? pop.Size > 0 : false;
     }
 
+    public void ShowSelectedAction(int playerId)
+    {
+        var pop = GetPlayerPopulation(playerId);
+        brick.ShowAction(pop == null ? ActionMode.None : pop.activeAction);
+    }
+
     public PlayerPopulationData GetSubSample(int playerId, int sample, out int realizedSample)
     {
         PlayerPopulation pop = GetPlayerPopulation(playerId);
-        if (pop)
+        if (pop && pop.Size > 0)
         {
             return pop.GetDataSample(sample, out realizedSample);
         }

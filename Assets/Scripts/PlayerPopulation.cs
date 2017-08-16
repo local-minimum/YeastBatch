@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public enum ActionMode{Metabolism, Procreation};
+public enum ActionMode{None, Metabolism, Procreation};
 
 public class PlayerPopulationData {
 
@@ -28,6 +28,10 @@ public class PlayerPopulationData {
 
     public void Add(PlayerPopulationData other)
     {
+        if (other == null)
+        {
+            return;
+        }
         populationSize += other.populationSize;
         energy += other.energy;
         waste += other.waste;
@@ -52,7 +56,15 @@ public class PlayerPopulation : AbsNutrientState {
 
     public PlayerPopulationData GetDataSample(int sample, out int realizedSample)
     {
-        return data.SubSample(sample, out realizedSample);
+        if (sample > 0)
+        {
+            realizedSample = 0;
+            return new PlayerPopulationData();
+        }
+        else
+        {
+            return data.SubSample(sample, out realizedSample);
+        }
     }
 
     Tile tile;

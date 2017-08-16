@@ -127,12 +127,14 @@ public class TileCanvas : MonoBehaviour {
     public void LetsGetItOn()
     {
         _editingPop.activeAction = ActionMode.Procreation;
+        _editingTile.ShowSelectedAction(Match.ActivePlayer);
         HideCanvas();
     }
 
     public void EatAndLive()
     {
         _editingPop.activeAction = ActionMode.Metabolism;
+        _editingTile.ShowSelectedAction(Match.ActivePlayer);
         HideCanvas();
     }
 

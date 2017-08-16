@@ -10,17 +10,17 @@ public class UIPlayer : MonoBehaviour {
 
     private void OnEnable()
     {
-        Plate.OnPlayerTurn += HandlePlayerTurn;
+        Match.OnPlayerTurn += HandlePlayerTurn;
     }
 
     private void OnDisable()
     {
-        Plate.OnPlayerTurn -= HandlePlayerTurn;
+        Match.OnPlayerTurn -= HandlePlayerTurn;
     }
 
     private void OnDestroy()
     {
-        Plate.OnPlayerTurn -= HandlePlayerTurn;
+        Match.OnPlayerTurn -= HandlePlayerTurn;
     }
 
     private void HandlePlayerTurn(Player player, int playerId)

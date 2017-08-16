@@ -9,17 +9,17 @@ public class UIEndTurn : MonoBehaviour {
 
     private void OnEnable()
     {
-        Plate.OnPlayerTurn += HandlePlayerTurn;
+        Match.OnPlayerTurn += HandlePlayerTurn;
     }
 
     private void OnDisable()
     {
-        Plate.OnPlayerTurn -= HandlePlayerTurn;
+        Match.OnPlayerTurn -= HandlePlayerTurn;
     }
 
     private void OnDestroy()
     {
-        Plate.OnPlayerTurn -= HandlePlayerTurn;
+        Match.OnPlayerTurn -= HandlePlayerTurn;
     }
 
     private void HandlePlayerTurn(Player player, int playerId)
@@ -34,11 +34,11 @@ public class UIEndTurn : MonoBehaviour {
         }
     }
 
-    [SerializeField] Plate plate;
+    [SerializeField] Board plate;
 
     public void EndTurn()
     {
         actionButton.interactable = false;
-        plate.EndTurn();
+        Match.EndTurn();
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(Plate))]
+[CustomEditor(typeof(Board))]
 public class PlateEditor : Editor {
     public override void OnInspectorGUI()
     {
@@ -11,8 +11,8 @@ public class PlateEditor : Editor {
 
         if (GUILayout.Button("Compose and Cast Media"))
         {
-            (target as Plate).SetMediaComposition();
-            (target as Plate).CastMedia();
+            (target as Board).SetMediaComposition();
+            (target as Board).CastMedia();
         }
     }
 }

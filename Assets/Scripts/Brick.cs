@@ -30,21 +30,35 @@ public class Brick : MonoBehaviour {
 
     private void OnEnable()
     {
-        Plate.OnPlayerTurn += HandlePlayerTurn;
+        Match.OnPlayerTurn += HandlePlayerTurn;
     }
 
     private void OnDisable()
     {
-        Plate.OnPlayerTurn -= HandlePlayerTurn;
+        Match.OnPlayerTurn -= HandlePlayerTurn;
     }
 
     private void OnDestroy()
     {
-        Plate.OnPlayerTurn -= HandlePlayerTurn;
+        Match.OnPlayerTurn -= HandlePlayerTurn;
     }
 
     private void HandlePlayerTurn(Player player, int playerId)
     {
-        popRend.color = player.playerColor;
+        if (tile.HasPopulation(playerId))
+        {
+            popRend.color = player.playerColor;
+        } else
+        {
+            popRend.color = new Color(0, 0, 0, 0);
+        }
+        tile.ShowSelectedAction(playerId);
+    }
+
+    [SerializeField] GameObject modeAnim;
+
+    public void ShowAction(ActionMode mode)
+    {
+        modeAnim.GetComponent<Animator>().SetTrigger(System.Enum.GetName(typeof(ActionMode), mode));
     }
 }

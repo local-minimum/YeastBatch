@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void PlayerTurn(Player player, int pId);
-
-public class Plate : MonoBehaviour {
-
-    public static PlayerTurn OnPlayerTurn;
+public class Board : MonoBehaviour {
 
     [SerializeField]
     NutrientState maxMedia;
@@ -51,10 +47,10 @@ public class Plate : MonoBehaviour {
     [SerializeField]
     int startEnergy = 200;
 
-    public void InitiateBatch()
+    public void InitiateBatch(int nPlayers)
     {
         int totalSize;
-        int[] totalSizes = TotalPlayerPopulations(out totalSize);
+        int[] totalSizes = TotalPlayerPopulations(out totalSize, nPlayers);
         int[] samples = GetSampleSizes(totalSizes, totalSize);
 
         for (int i = 0; i < nPlayers; i++)
@@ -104,6 +100,7 @@ public class Plate : MonoBehaviour {
     
     int[] GetSampleSizes(int[] totalSizes, int totalSize)
     {
+        int nPlayers = totalSizes.Length;
         float fraction = (startPop * nPlayers) / totalSize;
         int[] sample = new int[nPlayers];
         for (int i = 0; i < nPlayers; i++)
@@ -113,7 +110,7 @@ public class Plate : MonoBehaviour {
         return sample;
     }
 
-    public int[] TotalPlayerPopulations(out int totalSize)
+    public int[] TotalPlayerPopulations(out int totalSize, int nPlayers)
     {
         totalSize = 0;
         int[] totalSizes = new int[nPlayers];
@@ -129,8 +126,8 @@ public class Plate : MonoBehaviour {
     }
 
     [SerializeField] Tile startTile;
-    int nPlayers;
-    public void StartGame(int nPlayers)
+
+    public void SetupGame(int nPlayers)
     {
         foreach (Tile tile in GetComponentsInChildren<Tile>())
         {
@@ -140,38 +137,6 @@ public class Plate : MonoBehaviour {
                 tile.SetPopulationSizeAndEnergy(0, isStart ? startPop : 0, isStart ? startEnergy : 0);
             }
         }
-        this.nPlayers = nPlayers;
-        SetPlayerTurn(0);
     }
 
-    void SetPlayerTurn(int pId)
-    {
-        if (OnPlayerTurn != null)
-        {
-            OnPlayerTurn(players[activePlayer], activePlayer);
-
-        }
-    }
-
-    public void EndTurn()
-    {
-        activePlayer++;
-        if (activePlayer < nPlayers)
-        {
-            SetPlayerTurn(activePlayer);
-        } else
-        {
-            //TODO: Run through actions
-            activePlayer = 0;
-        }
-    }
-
-    int activePlayer;
-    Player[] players;
-
-    private void Start()
-    {
-        players = Player.GetPlayers();
-        StartGame(2);
-    }
 }
