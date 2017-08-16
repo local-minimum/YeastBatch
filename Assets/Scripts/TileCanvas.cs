@@ -20,6 +20,8 @@ public class TileCanvas : MonoBehaviour {
             _canvas._editingPop = tile.GetPlayerPopulation(playerId);
             _canvas.gameObject.SetActive(true);
             _canvas.UpdateSliders();
+            _canvas.HideHelpTexts();
+            _canvas.HideControls();
         }
     }
 
@@ -119,9 +121,7 @@ public class TileCanvas : MonoBehaviour {
 
     private void Start()
     {
-
-        HideHelpTexts();
-        HideControls();
+        HideCanvas();
     }
 
     public void LetsGetItOn()

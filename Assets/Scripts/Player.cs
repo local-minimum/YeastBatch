@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
     public PlayerType playerType;
     public Color playerColor;
     public string playerName;
-
+    public bool isLocalPlayer;
     public string GetName()
     {
         if (string.IsNullOrEmpty(playerName))

@@ -47,4 +47,4 @@ public class Brick : MonoBehaviour {
     {
         popRend.color = player.playerColor;
     }
-    }
+}
