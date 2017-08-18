@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+enum PlayerAction { None, Population, Migration, Diffusion};
+
 public class Tile : MonoBehaviour {
 
     [HideInInspector]
@@ -149,6 +151,35 @@ public class Tile : MonoBehaviour {
     public void SaturateMedia()
     {
         nutrientState.Saturate();
+    }
+
+    List<PlayerAction> selectedActions = new List<PlayerAction>();
+
+    void SetPlayerAction(int playerId, PlayerAction action)
+    {
+        while (selectedActions.Count <= playerId)
+        {
+            selectedActions.Add(PlayerAction.None);
+        }
+        selectedActions[playerId] = action;
+    }
+
+    public void PlanDiffusion()
+    {
+        SetPlayerAction(Match.ActivePlayer, PlayerAction.Diffusion);
+    }
+
+    Tile migrationTarget;
+    public void PlanMigration(Tile target)
+    {
+        SetPlayerAction(Match.ActivePlayer, PlayerAction.Migration);
+        migrationTarget = target;
+    }
+
+    public void ClearPlan()
+    {
+        SetPlayerAction(Match.ActivePlayer, PlayerAction.None);
+
     }
 
     [SerializeField]
