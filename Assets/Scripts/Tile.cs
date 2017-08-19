@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum PlayerAction { None, Population, Migration, Diffusion};
+public enum PlayerAction { None, Population, Migration, Diffusion};
 
 public class Tile : MonoBehaviour {
 
@@ -38,10 +38,13 @@ public class Tile : MonoBehaviour {
         return pop ? pop.Size > 0 : false;
     }
 
-    public void ShowSelectedAction(int playerId)
+    public void ShowSelectedPopAction(int playerId)
     {
-        var pop = GetPlayerPopulation(playerId);
-        brick.ShowAction(pop == null ? ActionMode.None : pop.activeAction);
+        if (GetPlayerAction(playerId) == PlayerAction.Population)
+        {
+            var pop = GetPlayerPopulation(playerId);
+            brick.ShowPopAction(pop == null ? ActionMode.None : pop.activeAction);
+        }
     }
 
     public PlayerPopulationData GetSubSample(int playerId, int sample, out int realizedSample)
@@ -155,13 +158,24 @@ public class Tile : MonoBehaviour {
 
     List<PlayerAction> selectedActions = new List<PlayerAction>();
 
-    void SetPlayerAction(int playerId, PlayerAction action)
+    public void SetPlayerAction(int playerId, PlayerAction action)
     {
         while (selectedActions.Count <= playerId)
         {
             selectedActions.Add(PlayerAction.None);
         }
         selectedActions[playerId] = action;
+    }
+
+    public PlayerAction GetPlayerAction(int playerId)
+    {
+        if (selectedActions.Count <= playerId)
+        {
+            return PlayerAction.None;
+        } else
+        {
+            return selectedActions[playerId];
+        }
     }
 
     public void PlanDiffusion()
@@ -179,7 +193,6 @@ public class Tile : MonoBehaviour {
     public void ClearPlan()
     {
         SetPlayerAction(Match.ActivePlayer, PlayerAction.None);
-
     }
 
     [SerializeField]

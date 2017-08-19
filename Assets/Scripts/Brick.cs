@@ -62,12 +62,12 @@ public class Brick : MonoBehaviour {
         {
             popRend.color = new Color(0, 0, 0, 0);
         }
-        tile.ShowSelectedAction(playerId);
+        tile.ShowSelectedPopAction(playerId);
     }
 
     [SerializeField] GameObject modeAnim;
 
-    public void ShowAction(ActionMode mode)
+    public void ShowPopAction(ActionMode mode)
     {
         modeAnim.GetComponent<Animator>().SetTrigger(System.Enum.GetName(typeof(ActionMode), mode));
     }
@@ -79,7 +79,7 @@ public class Brick : MonoBehaviour {
     private void Update()
     {
         //TODO: OverMe propagates through UIs
-        if (overMe)
+        if (overMe && !TileCanvas.Showing)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -122,6 +122,7 @@ public class Brick : MonoBehaviour {
     private void IllustrateSelection(Brick target, bool selectionDone)
     {
         TileActions current = GetTileAction(target, selectionDone);
+
         if (current == prevAction)
         {
             return;
@@ -132,7 +133,21 @@ public class Brick : MonoBehaviour {
         {
             case TileActions.None:
                 //TODO: This need to revert if not performed or something
-                anim.SetTrigger("None");
+                var resetAction = tile.GetPlayerAction(Match.ActivePlayer);
+                if (resetAction == PlayerAction.None)
+                {
+                    anim.SetTrigger("None");
+                } else if (resetAction == PlayerAction.Migration)
+                {
+                    anim.SetTrigger("Migration");
+                } else if (resetAction == PlayerAction.Diffusion)
+                {
+                    anim.SetTrigger("Diffusion");
+                } else
+                {                    
+                    tile.ShowSelectedPopAction(Match.ActivePlayer);
+                }
+                
                 break;
             case TileActions.NotYetDiffusion:
                 //TODO: Should fade in or something
@@ -157,22 +172,24 @@ public class Brick : MonoBehaviour {
             return TileActions.None;
         } else if (this == other)
         {
-            return TileActions.Diffusion;
-        } else if (Time.timeSinceLevelLoad - buttonDownTime > pressForDiffusion)
+            if (Time.timeSinceLevelLoad - buttonDownTime > pressForDiffusion)
+            {
+                return TileActions.Diffusion;
+            } else if (selectionDone)
+            {
+                return TileActions.None;
+            } else
+            {
+                return TileActions.NotYetDiffusion;
+            }
+        } else 
         {
             return TileActions.Migration;
-        } else if (selectionDone)
-        {
-            return TileActions.None;
-        }
-        {
-            return TileActions.NotYetDiffusion;
         }
     }
 
     void SetTileAction(Brick other)
     {
-        //TODO: Needs to be plans rather than actions directly and needs negating pop actions
         switch (GetTileAction(other, true))
         {
             case TileActions.Diffusion:

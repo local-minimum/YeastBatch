@@ -5,6 +5,14 @@ using UnityEngine.UI;
 
 public class TileCanvas : MonoBehaviour {
 
+    public static bool Showing {
+        get
+        {
+            return _showing && !_canvas.isDelayHiding;
+        }
+    }
+    static bool _showing;
+
     public static void ShowFor(Tile tile)
     {
         //TODO: Fix so matches current player
@@ -22,6 +30,7 @@ public class TileCanvas : MonoBehaviour {
             _canvas.UpdateSliders();
             _canvas.HideHelpTexts();
             _canvas.HideControls();
+            _showing = true;
         }
     }
 
@@ -127,14 +136,16 @@ public class TileCanvas : MonoBehaviour {
     public void LetsGetItOn()
     {
         _editingPop.activeAction = ActionMode.Procreation;
-        _editingTile.ShowSelectedAction(Match.ActivePlayer);
+        _editingTile.SetPlayerAction(Match.ActivePlayer, PlayerAction.Population);
+        _editingTile.ShowSelectedPopAction(Match.ActivePlayer);
         HideCanvas();
     }
 
     public void EatAndLive()
     {
         _editingPop.activeAction = ActionMode.Metabolism;
-        _editingTile.ShowSelectedAction(Match.ActivePlayer);
+        _editingTile.SetPlayerAction(Match.ActivePlayer, PlayerAction.Population);
+        _editingTile.ShowSelectedPopAction(Match.ActivePlayer);
         HideCanvas();
     }
 
@@ -166,6 +177,7 @@ public class TileCanvas : MonoBehaviour {
         gameObject.SetActive(false);
         _editingPop = null;
         _editingTile = null;
+        _showing = false;
     }
 
     Tile _editingTile;
