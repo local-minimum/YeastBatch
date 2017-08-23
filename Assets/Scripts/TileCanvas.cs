@@ -34,6 +34,15 @@ public class TileCanvas : MonoBehaviour {
         }
     }
 
+    public static void HideIfNotHovered()
+    {
+        if (!hovered)
+        {
+            _canvas.DelayHiding();
+        }
+    }
+
+
     [SerializeField]
     static float zOffset = 5;
 
@@ -249,5 +258,27 @@ public class TileCanvas : MonoBehaviour {
     {
         MetabolismSlider mSlider = me.GetComponent<MetabolismSlider>();
         //mSlider.tooltip;
+    }
+
+    static bool hovered;
+
+    private void OnMouseOver()
+    {
+        if (isDelayHiding)
+        {
+            isDelayHiding = false;
+        }
+        hovered = true;
+    }
+
+    public void CanvasEnter()
+    {        
+        hovered = true;
+    }
+
+    public void CanvasExit()
+    {
+        hovered = false;
+        DelayHiding();
     }
 }

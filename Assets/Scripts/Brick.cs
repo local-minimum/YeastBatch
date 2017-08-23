@@ -78,12 +78,13 @@ public class Brick : MonoBehaviour {
     public void ShowPopAction(ActionMode mode)
     {
         modeAnim.GetComponent<Animator>().SetTrigger(System.Enum.GetName(typeof(ActionMode), mode));
+        arrow.Hide();
     }
 
     static Brick LeftSelectBrick;
     static Brick RightSelectBrick;
     static float buttonDownTime;
-    static float pressForDiffusion = 1.5f;
+    static float pressForDiffusion = 0.5f;
 
     public static void SetLeftSelect(Brick brick)
     {
@@ -143,15 +144,21 @@ public class Brick : MonoBehaviour {
                     RightSelectBrick = null;
                 }
             }
+        } else if (TileCanvas.Showing && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
+        {
+            TileCanvas.HideIfNotHovered();
         }
     }
 
     private void ClearPlanIllustration()
     {
         Animator anim = modeAnim.GetComponent<Animator>();
-        anim.SetTrigger("None");        
+        anim.SetTrigger("None");
+        arrow.Hide();
 
     }
+
+    [SerializeField] UIMigrationArrow arrow;
 
     TileActions prevAction = TileActions.None;
     private void IllustrateSelection(Brick target, bool selectionDone)
@@ -172,14 +179,19 @@ public class Brick : MonoBehaviour {
                 if (resetAction == PlayerAction.None)
                 {
                     anim.SetTrigger("None");
-                } else if (resetAction == PlayerAction.Migration)
+                    LeftSelectBrick.arrow.Hide();
+                }
+                else if (resetAction == PlayerAction.Migration)
                 {
+                    LeftSelectBrick.arrow.ReShow();
                     anim.SetTrigger("None");
                 } else if (resetAction == PlayerAction.Diffusion)
                 {
                     anim.SetTrigger("Diffusion");
+                    LeftSelectBrick.arrow.Hide();
                 } else
-                {                    
+                {
+                    LeftSelectBrick.arrow.Hide();
                     tile.ShowSelectedPopAction(Match.ActivePlayer);
                 }
                 
@@ -187,11 +199,12 @@ public class Brick : MonoBehaviour {
             case TileActions.NotYetDiffusion:
                 //TODO: Should fade in or something
             case TileActions.Diffusion:
+                LeftSelectBrick.arrow.Hide();
                 anim.SetTrigger("Diffusion");
                 break;
             case TileActions.Migration:
                 anim.SetTrigger("None");
-                //TODO: Should illustrate thingy to target
+                LeftSelectBrick.arrow.ShowMigration(target.transform);
                 break;
         }
 
