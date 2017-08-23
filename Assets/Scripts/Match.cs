@@ -23,11 +23,19 @@ public class Match : MonoBehaviour {
         }
     }
 
+    public static int TotalPlayers
+    {
+        get
+        {
+            return _match.totalPlayers;
+        }
+    }
+
     //TODO: Implement game modes
 
     int activePlayer;
     Player[] players;
-    int nPlayers;
+    int totalPlayers;
 
     [SerializeField]
     Board board;
@@ -36,8 +44,8 @@ public class Match : MonoBehaviour {
     {
         _match = this;
         players = Player.GetPlayers();
-        nPlayers = players.Length;
-        board.SetupGame(nPlayers);
+        totalPlayers = players.Length;
+        board.SetupGame(totalPlayers);
         SetPlayerTurn(activePlayer);
         //TODO: why not do this: board.InitiateBatch(nPlayers);
     }
@@ -45,14 +53,19 @@ public class Match : MonoBehaviour {
     void _EndTurn()
     {
         activePlayer++;
-        if (activePlayer < nPlayers)
+        if (activePlayer < totalPlayers)
         {
             SetPlayerTurn(activePlayer);
         }
         else
         {
-            //TODO: Run through actions
+            board.EnactMetabolism();
+            board.EnactProcreation();
+            board.EnactMigration();
+            board.EnactDiffusion();
+
             activePlayer = 0;
+            SetPlayerTurn(activePlayer);
         }
     }
 

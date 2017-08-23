@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Board : MonoBehaviour {
 
@@ -139,4 +140,71 @@ public class Board : MonoBehaviour {
         }
     }
 
+    public void EnactMetabolism()
+    {
+        foreach (Tile tile in GetComponentsInChildren<Tile>())
+        {
+            foreach (int playerId in tile.GetPlayerIndexBySize())
+            {
+                if (tile.GetPlayerAction(playerId) == PlayerAction.Population)
+                {
+                    PlayerPopulation pop = tile.GetPlayerPopulation(playerId);
+                    if (pop.activeAction == ActionMode.Metabolism)
+                    {
+                        Debug.Log("Metabolize " + playerId + " on tile " + tile.name);
+                        pop.Metabolize();
+                    }
+                }
+            }
+        }
+    }
+
+    public void EnactProcreation()
+    {
+        foreach (Tile tile in GetComponentsInChildren<Tile>())
+        {
+            foreach (int playerId in tile.GetPlayerIndexBySize())
+            {
+                if (tile.GetPlayerAction(playerId) == PlayerAction.Population)
+                {
+                    PlayerPopulation pop = tile.GetPlayerPopulation(playerId);
+                    if (pop.activeAction == ActionMode.Procreation)
+                    {
+                        Debug.Log("Procreate " + playerId + " on tile " + tile.name);
+                        pop.Procreate();
+                    }
+                }
+            }
+        }
+    }
+
+    public void EnactMigration()
+    {
+        foreach (Tile tile in GetComponentsInChildren<Tile>().OrderBy(e => -e.GetTotalPopulationSize()))
+        {
+            for (int i = 0, l = Match.TotalPlayers; i < l; i++)
+            {
+                if (tile.GetPlayerAction(i) == PlayerAction.Migration)
+                {
+                    tile.Migrate(i);
+                }
+            }
+        }
+    }
+
+    public void EnactDiffusion()
+    {
+        
+        foreach (Tile tile in GetComponentsInChildren<Tile>().OrderBy(e => e.GetTotalPopulationSize()))
+        {
+            for (int i = 0, l = Match.TotalPlayers; i < l; i++)
+            {
+                if (tile.GetPlayerAction(i) == PlayerAction.Diffusion)
+                {
+                    tile.DiffuseMedia();
+                }
+            }
+
+        }
+    }
 }

@@ -161,12 +161,20 @@ public class NutrientState : AbsNutrientState {
     public int Extract(Nutrients nutrient, int energy)
     {
         MediaNutrient mediaNutrient = GetNutrient(nutrient);
+        if (mediaNutrient == null)
+        {
+            return 0;
+        }
         int extraction = GetExtractionVolume(mediaNutrient, energy);
         return mediaNutrient.Extract(extraction);
     }
 
     int GetExtractionVolume(MediaNutrient nutrient, int energy)
     {
+        if (nutrient == null)
+        {
+            return 0;
+        }
         return Mathf.FloorToInt(Mathf.Min(energy * nutrient.saturation, nutrient.CurrentValue));
     }
 

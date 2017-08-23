@@ -359,9 +359,9 @@ public class PlayerPopulation : AbsNutrientState {
 
     void CreateEnergy()
     {
-        MediaNutrient C = GetNutrient(Nutrients.C);
-        MediaNutrient N = GetNutrient(Nutrients.N);
-        MediaNutrient AA = GetNutrient(Nutrients.AA);
+        MediaNutrient C = GetNutrient(Nutrients.C, true);
+        MediaNutrient N = GetNutrient(Nutrients.N, true);
+        MediaNutrient AA = GetNutrient(Nutrients.AA, true);
 
         int production = Mathf.Min(
             C.CurrentValue / 20,

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum PlayerAction { None, Population, Migration, Diffusion};
 
@@ -36,6 +37,29 @@ public class Tile : MonoBehaviour {
     {
         PlayerPopulation pop = GetPlayerPopulation(playerId);
         return pop ? pop.Size > 0 : false;
+    }
+
+    public List<int> GetPlayerIndexBySize()
+    {
+        List<KeyValuePair<int, int>> sizes = new List<KeyValuePair<int, int>>(); 
+        for (int i=0,l=Match.TotalPlayers; i<l; i++)
+        {
+            if (HasPopulation(i))
+            {
+                sizes.Add(new KeyValuePair<int, int>(i, GetPlayerPopulation(i).Size));
+            }
+        }
+        return sizes.OrderBy(e => e.Value).Select(e => e.Key).ToList();
+    }
+
+    public int GetTotalPopulationSize()
+    {
+        int total = 0;
+        for (int i = 0, l = Match.TotalPlayers; i < l; i++)
+        {
+            total += GetPopulationSize(i);
+        }
+        return total;
     }
 
     public void ShowSelectedPopAction(int playerId)
@@ -183,11 +207,29 @@ public class Tile : MonoBehaviour {
         SetPlayerAction(Match.ActivePlayer, PlayerAction.Diffusion);
     }
 
-    Tile migrationTarget;
+    public void DiffuseMedia()
+    {
+        nutrientState.CauseDiffusion(neighbours.Select(n => n.nutrientState).ToArray());
+    }
+
+    List<Tile> migrationTargets = new List<Tile>();
     public void PlanMigration(Tile target)
     {
         SetPlayerAction(Match.ActivePlayer, PlayerAction.Migration);
-        migrationTarget = target;
+        while (Match.ActivePlayer >= migrationTargets.Count)
+        {
+            migrationTargets.Add(null);
+        }
+        migrationTargets[Match.ActivePlayer] = target;
+    }
+
+    public Tile GetMigrationTarget(int playerId)
+    {
+        if (playerId < migrationTargets.Count)
+        {
+            return migrationTargets[playerId];
+        }
+        return null;
     }
 
     public void ClearPlan()
@@ -198,9 +240,11 @@ public class Tile : MonoBehaviour {
     [SerializeField]
     int migrationFraction = 6;
 
-    public void Migrate(Tile destination)
+    public void Migrate(int playerId)
     {
-        if (!HasNeighbour(destination))
+        Tile migrationTarget = GetMigrationTarget(playerId);
+
+        if (!HasNeighbour(migrationTarget))
         {
             throw new System.ArgumentException("Destination is not a neighbour");
         }
@@ -208,7 +252,7 @@ public class Tile : MonoBehaviour {
         for (int pId = 0, l = playerPopulations.Count; pId < l; pId++)
         {
             PlayerPopulation sourcePop = GetPlayerPopulation(pId);
-            PlayerPopulation targetPop = destination.GetPlayerPopulation(pId);
+            PlayerPopulation targetPop = migrationTarget.GetPlayerPopulation(pId);
             int migration = (sourcePop.Size - targetPop.Size) / migrationFraction;
             if (migration > 0)
             {
