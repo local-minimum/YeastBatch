@@ -19,5 +19,6 @@ public class PopIcon : MonoBehaviour {
     public void ClickYeast()
     {
         TileCanvas.ShowFor(tile);
+        Brick.SetLeftSelect(tile.brick);
     }
 }

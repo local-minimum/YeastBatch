@@ -38,18 +38,26 @@ public class Brick : MonoBehaviour {
     private void OnDisable()
     {
         Match.OnPlayerTurn -= HandlePlayerTurn;
-        if (ButtonDown == this)
+        if (LeftSelectBrick == this)
         {
-            ButtonDown = null;
+            LeftSelectBrick = null;
+        }
+        if (RightSelectBrick == this)
+        {
+            RightSelectBrick = null;
         }
     }
 
     private void OnDestroy()
     {
         Match.OnPlayerTurn -= HandlePlayerTurn;
-        if (ButtonDown == this)
+        if (LeftSelectBrick == this)
         {
-            ButtonDown = null;
+            LeftSelectBrick = null;
+        }
+        if (RightSelectBrick == this)
+        {
+            RightSelectBrick = null;
         }
     }
 
@@ -72,9 +80,25 @@ public class Brick : MonoBehaviour {
         modeAnim.GetComponent<Animator>().SetTrigger(System.Enum.GetName(typeof(ActionMode), mode));
     }
 
-    static Brick ButtonDown;
+    static Brick LeftSelectBrick;
+    static Brick RightSelectBrick;
     static float buttonDownTime;
-    float pressForDiffusion = 1.5f;
+    static float pressForDiffusion = 1.5f;
+
+    public static void SetLeftSelect(Brick brick)
+    {
+        //Debug.Log("Select " + brick);
+        LeftSelectBrick = brick;
+    }
+
+    public static void RemoveLeftSelect(Brick brick)
+    {
+        if (brick == LeftSelectBrick)
+        {
+            LeftSelectBrick = null;
+            //Debug.Log("UnSelect " + brick);
+        }
+    }
 
     private void Update()
     {
@@ -83,30 +107,41 @@ public class Brick : MonoBehaviour {
         {
             if (Input.GetMouseButtonDown(0))
             {
-                ButtonDown = this;
-                buttonDownTime = Time.timeSinceLevelLoad;
+                LeftSelectBrick = this;
+                buttonDownTime = Time.timeSinceLevelLoad;                
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (LeftSelectBrick)
             {
-                ButtonDown.IllustrateSelection(this, true);
-                ButtonDown.SetTileAction(this);                
-
-            } else if (Input.GetMouseButton(0))
-            {
-                ButtonDown.IllustrateSelection(this, false);
-                
-            } else if (Input.GetMouseButtonDown(1))
-            {
-                ButtonDown = this;
-            } else if (Input.GetMouseButtonUp(1))
-            {
-                if (ButtonDown == this)
+                if (Input.GetMouseButtonUp(0))
                 {
-                    tile.ClearPlan();
-                    ClearPlanIllustration();
+                    LeftSelectBrick.IllustrateSelection(this, true);
+                    LeftSelectBrick.SetTileAction(this);
+
                 }
-                ButtonDown = null;
+                else if (Input.GetMouseButton(0))
+                {
+                    LeftSelectBrick.IllustrateSelection(this, false);
+
+                }
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                RightSelectBrick = this;
+                Debug.Log("Right Select " + RightSelectBrick);
+            } else if (RightSelectBrick) {
+                if (Input.GetMouseButtonUp(1))
+                {
+                    Debug.Log("Right Select Complete " + RightSelectBrick);
+                    if (RightSelectBrick == this)
+                    {
+                        Debug.Log("Clear");
+                        tile.ClearPlan();
+                        ClearPlanIllustration();
+                    }
+                    RightSelectBrick = null;
+                }
             }
         }
     }
@@ -139,7 +174,7 @@ public class Brick : MonoBehaviour {
                     anim.SetTrigger("None");
                 } else if (resetAction == PlayerAction.Migration)
                 {
-                    anim.SetTrigger("Migration");
+                    anim.SetTrigger("None");
                 } else if (resetAction == PlayerAction.Diffusion)
                 {
                     anim.SetTrigger("Diffusion");

@@ -175,9 +175,14 @@ public class TileCanvas : MonoBehaviour {
     public void HideCanvas()
     {
         gameObject.SetActive(false);
+        if (_editingTile)
+        {
+            Brick.RemoveLeftSelect(_editingTile.brick);
+        }
         _editingPop = null;
         _editingTile = null;
         _showing = false;
+
     }
 
     Tile _editingTile;
