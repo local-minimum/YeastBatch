@@ -66,11 +66,15 @@ public class Brick : MonoBehaviour {
         if (tile.HasPopulation(playerId))
         {
             popRend.color = player.playerColor;
-        } else
-        {
-            popRend.color = new Color(0, 0, 0, 0);
+            popRend.gameObject.SetActive(true);
         }
-        tile.ShowSelectedPopAction(playerId);
+        else
+        {
+            //popRend.color = new Color(0, 0, 0, 0);
+            popRend.gameObject.SetActive(false);
+        }
+        //TODO: Use exactly what was planned, not only player action
+        //tile.ShowSelectedPopAction(playerId);
     }
 
     [SerializeField] GameObject modeAnim;
