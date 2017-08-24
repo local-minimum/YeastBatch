@@ -197,8 +197,10 @@ public class TileCanvas : MonoBehaviour {
     Tile _editingTile;
     PlayerPopulation _editingPop;
 
+    static bool updatingSliders;
     public void UpdateSlider(Slider me)
     {
+
         MetabolismSlider mSlider = me.GetComponent<MetabolismSlider>();
         int requested = Mathf.FloorToInt(_editingPop.TotalEnergy * me.value);
         float updateSlideValue = me.value;
@@ -206,23 +208,28 @@ public class TileCanvas : MonoBehaviour {
         int allowed = GetAllowance(mSlider, requested);
         if (allowed < requested)
         {
-            updateSlideValue = (float) allowed / _editingPop.TotalEnergy;
+            updateSlideValue = (float) allowed / _editingPop.TotalEnergy;            
             me.value = updateSlideValue;
         }
 
         //Debug.Log(string.Format("{0} {1} {2} {3}", requested, allowed, updateSlideValue, _editionPop.TotalEnergy));
 
-        UpdateSliders();
+        if (!updatingSliders)
+        {
+            UpdateSliders();
+        }
     }
 
     void UpdateSliders()
     {
+        updatingSliders = true;
         float total = _editingPop.TotalEnergy;
         foreach (Slider s in metabolismSliders)
         {
             var ms = s.GetComponent<MetabolismSlider>();
             s.value = _editingPop.GetPlanningCostOf(ms.key) / total;
         }
+        updatingSliders = false;
     }
 
     int GetAllowance(MetabolismSlider mSlider, int requested)

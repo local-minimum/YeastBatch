@@ -50,27 +50,28 @@ public class Board : MonoBehaviour {
 
     public void InitiateBatch(int nPlayers)
     {
+
         int totalSize;
         int[] totalSizes = TotalPlayerPopulations(out totalSize, nPlayers);
         int[] samples = GetSampleSizes(totalSizes, totalSize);
+        PlayerPopulationData[] pops = new PlayerPopulationData[samples.Length];
 
         for (int i = 0; i < nPlayers; i++)
         {
-            PlayerPopulationData pop = GetReplatePopulation(i, samples[i]);
-            startTile.SetPopulationFromData(i, pop);
+            pops[i] = GetReplatePopulation(i, samples[i]);
+        }
+        RemovePopulations();
+        for (int i = 0; i < nPlayers; i++)
+        {
+            startTiles[i].SetPopulationFromData(i, pops[i]);
         }
 
-        RemovePopulationsFromNonStart();
     }
 
-    void RemovePopulationsFromNonStart()
+    void RemovePopulations()
     {
         foreach (Tile tile in GetComponentsInChildren<Tile>())
-        {
-            if (tile == startTile)
-            {
-                continue;
-            }
+        {            
 
             tile.ClearPopulations();
         }
@@ -126,16 +127,20 @@ public class Board : MonoBehaviour {
         return totalSizes;
     }
 
-    [SerializeField] Tile startTile;
+    [SerializeField] Tile[] startTiles;
 
     public void SetupGame(int nPlayers)
     {
         foreach (Tile tile in GetComponentsInChildren<Tile>())
         {
-            bool isStart = tile == startTile;
             for (int pId = 0; pId < nPlayers; pId++)
             {
-                tile.SetPopulationSizeAndEnergy(0, isStart ? startPop : 0, isStart ? startEnergy : 0);
+                bool isStart = startTiles[pId] == tile;
+                if (isStart)
+                {
+                    Debug.Log("Player " + pId + " starts at " + tile.name);
+                }
+                tile.SetPopulationSizeAndEnergy(pId, isStart ? startPop : 0, isStart ? startEnergy : 0);
             }
         }
     }

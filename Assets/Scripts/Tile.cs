@@ -24,7 +24,10 @@ public class Tile : MonoBehaviour {
                 return playerPopulations[i];
             }
         }
-        return null;
+        PlayerPopulation pop = gameObject.AddComponent<PlayerPopulation>();
+        pop.playerId = playerId;
+        playerPopulations.Add(pop);
+        return pop;
     }
 
     public int GetPopulationSize(int playerId)
@@ -244,7 +247,7 @@ public class Tile : MonoBehaviour {
     {
         Tile migrationTarget = GetMigrationTarget(playerId);
 
-        if (!HasNeighbour(migrationTarget))
+        if (!HasNeighbour(migrationTarget) || migrationTarget == null)
         {
             throw new System.ArgumentException("Destination is not a neighbour");
         }
@@ -261,6 +264,7 @@ public class Tile : MonoBehaviour {
 
                 sourcePop.RemoveMigrants(subPop);
                 targetPop.AddMigrants(subPop);
+                Debug.Log("Migrated " + subPop.populationSize + " (" + migration + "/" + realizedSample + ") units for Player " + pId + " from " + name + " to " + migrationTarget.name);
             }
         }
     }

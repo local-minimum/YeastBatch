@@ -184,7 +184,7 @@ public class NutrientState : AbsNutrientState {
 
     public void Deposit(Nutrients nutrient, int volume)
     {
-        GetNutrient(nutrient).Deposit(volume);
+        GetNutrient(nutrient, true).Deposit(volume);
     }
     #endregion
 

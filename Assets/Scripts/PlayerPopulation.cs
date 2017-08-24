@@ -56,7 +56,7 @@ public class PlayerPopulation : AbsNutrientState {
 
     public PlayerPopulationData GetDataSample(int sample, out int realizedSample)
     {
-        if (sample > 0)
+        if (sample <= 0)
         {
             realizedSample = 0;
             return new PlayerPopulationData();
