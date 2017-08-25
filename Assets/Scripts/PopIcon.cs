@@ -20,5 +20,6 @@ public class PopIcon : MonoBehaviour {
     {
         TileCanvas.ShowFor(tile);
         Brick.SetLeftSelect(tile.brick);
+        
     }
 }

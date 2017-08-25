@@ -15,8 +15,7 @@ public class TileCanvas : MonoBehaviour {
 
     public static void ShowFor(Tile tile)
     {
-        //TODO: Fix so matches current player
-        int playerId = 0;
+        int playerId = Match.ActivePlayer;
 
         if (tile.HasPopulation(playerId))
         {
