@@ -36,6 +36,10 @@ public class MediaNutrient
     {
         get
         {
+            if (maxValue == 0)
+            {
+                return 0;
+            }
             return currentValue / maxValue;
         }
     }

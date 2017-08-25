@@ -15,6 +15,15 @@ public class Board : MonoBehaviour {
 
     public void SetMediaComposition()
     {
+        foreach (var media in GetComponents<NutrientState>())
+        {
+            if (media.name == "Current")
+            {
+                currentMedia = media;
+                break;
+            }
+        }
+
         if (currentMedia == null)
         {
             currentMedia = gameObject.AddComponent<NutrientState>();

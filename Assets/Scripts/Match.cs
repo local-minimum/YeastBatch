@@ -46,6 +46,8 @@ public class Match : MonoBehaviour {
         players = Player.GetPlayers();
         totalPlayers = players.Length;
         board.SetupGame(totalPlayers);
+        board.SetMediaComposition();
+        board.CastMedia();
         SetPlayerTurn(activePlayer);
         //TODO: why not do this: board.InitiateBatch(nPlayers);
     }

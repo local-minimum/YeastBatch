@@ -172,6 +172,10 @@ public class Tile : MonoBehaviour {
     {
         if (nutrientState == null)
         {
+            nutrientState = GetComponent<NutrientState>();
+        }
+        if (nutrientState == null)
+        {
             nutrientState = gameObject.AddComponent<NutrientState>();
         }
         nutrientState.CopyMax(media);
