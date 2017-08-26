@@ -19,6 +19,7 @@ public class PopIcon : MonoBehaviour {
     public void ClickYeast()
     {
         TileCanvas.ShowFor(tile);
+        UIPopViewer.ShowPop(tile.GetPlayerPopulation(Match.ActivePlayer));
         Brick.SetLeftSelect(tile.brick);
         
     }
