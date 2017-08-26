@@ -49,7 +49,7 @@ public class Match : MonoBehaviour {
         board.SetMediaComposition();
         board.CastMedia();
         SetPlayerTurn(activePlayer);
-        //TODO: why not do this: board.InitiateBatch(nPlayers);
+        
     }
 
     void _EndTurn()

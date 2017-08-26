@@ -304,15 +304,14 @@ public class PlayerPopulation : AbsNutrientState {
 
     public void Metabolize()
     {
+        ImportNutrients();
+
         CalculateDamage();
 
         CreateEnergy();
 
         MakeWaste();
         ExportWaste();
-
-        ImportNutrients();
-
     }
 
     int maintenance;
@@ -399,10 +398,13 @@ public class PlayerPopulation : AbsNutrientState {
 
     void ImportNutrient(MediaNutrient nutrient, ref int energy)
     {
-        int extracted = tile.nutrientState.Extract(nutrient.nutrient, energy * (1 + data.populationSize / 80));
+        int extracted = tile.nutrientState.Extract(nutrient.nutrient, Mathf.RoundToInt(energy * (1 + data.populationSize / 80f)));
         int surplus;
         nutrient.Deposit(extracted, out surplus);
         tile.nutrientState.Deposit(nutrient.nutrient, surplus);
+        Debug.Log(string.Format(
+            "Import of {0} using {1} energy, extracted {2} which when deposited caused {3} surplus",
+            nutrient, energy, extracted, surplus));
         energy = 0;
     }
 

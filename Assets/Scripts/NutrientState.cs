@@ -63,13 +63,15 @@ public class MediaNutrient
 
     public int Extract(float volume)
     {
+        Debug.Log(string.Format("Extracting {0} from {1}", volume, currentValue));
         return Extract(Mathf.FloorToInt(volume * currentValue));
     }
 
     public void Deposit(int volume, out int surplus)
     {
+        Debug.Log(string.Format("{0} volume {1} {2}", volume, currentValue, maxValue));
         surplus = Mathf.Max(0, volume - (maxValue - currentValue));
-        currentValue = Mathf.Min(maxValue, currentValue + volume);
+        currentValue = Mathf.Min(maxValue, currentValue + (volume - surplus));
     }
 
     public void Deposit(int volume)
@@ -172,6 +174,7 @@ public class NutrientState : AbsNutrientState {
         MediaNutrient mediaNutrient = GetNutrient(nutrient);
         if (mediaNutrient == null)
         {
+            Debug.LogError(nutrient + " does not exist");
             return 0;
         }
         int extraction = GetExtractionVolume(mediaNutrient, energy);
@@ -182,8 +185,10 @@ public class NutrientState : AbsNutrientState {
     {
         if (nutrient == null)
         {
+            Debug.LogError("Nutrient is null");
             return 0;
         }
+        Debug.Log(string.Format("using e {0} from saturation {1} capped by {2}", energy, nutrient.saturation, nutrient.CurrentValue));
         return Mathf.FloorToInt(Mathf.Min(energy * nutrient.saturation, nutrient.CurrentValue));
     }
 
