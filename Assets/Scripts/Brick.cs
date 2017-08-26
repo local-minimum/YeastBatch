@@ -23,11 +23,13 @@ public class Brick : MonoBehaviour {
     private void OnMouseEnter()
     {
         overMe = true;
+        UITileStatus.ShowFor(tile);
     }
 
     private void OnMouseExit()
     {
         overMe = false;
+        UITileStatus.Clear(tile);
     }
 
     private void OnEnable()
@@ -59,6 +61,7 @@ public class Brick : MonoBehaviour {
         {
             RightSelectBrick = null;
         }
+        UITileStatus.Clear(tile);
     }
 
     private void HandlePlayerTurn(Player player, int playerId)

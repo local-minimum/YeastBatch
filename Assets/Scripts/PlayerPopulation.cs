@@ -89,11 +89,6 @@ public class PlayerPopulation : AbsNutrientState {
         data.energy = other.energy;
     }
 
-    public int GetNutrientState(Nutrients nutrient)
-    {
-        return GetNutrient(nutrient, true).CurrentValue;
-    }
-
     public int GetWasteState()
     {
         return data.waste;

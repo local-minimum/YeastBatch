@@ -37,6 +37,17 @@ public class UIPopViewer : MonoBehaviour {
         _viewer.energy.text = pop.GetEnergyState().ToString();
     }
 
+    public static void ClearPop()
+    {
+        _viewer.popSize.text = "---";
+        _viewer.aaNutr.text = "---";
+        _viewer.cNutr.text = "---";
+        _viewer.nNutr.text = "---";
+        _viewer.waste.text = "---";
+        _viewer.damage.text = "---";
+        _viewer.energy.text = "---";
+    }
+
     static UIPopViewer _viewer;
 
 

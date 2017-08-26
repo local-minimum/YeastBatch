@@ -176,6 +176,7 @@ public class TileCanvas : MonoBehaviour {
         if (isDelayHiding)
         {
             HideCanvas();
+
             isDelayHiding = false;
         }
     }
@@ -190,7 +191,7 @@ public class TileCanvas : MonoBehaviour {
         _editingPop = null;
         _editingTile = null;
         _showing = false;
-
+        UIPopViewer.ClearPop();
     }
 
     Tile _editingTile;
