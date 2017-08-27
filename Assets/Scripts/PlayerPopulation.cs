@@ -16,13 +16,13 @@ public class PlayerPopulationData {
     public PlayerPopulationData SubSample(int sample, out int realizedSample)
     {
         realizedSample = Mathf.Min(sample, populationSize);
-        float fraction = sample / populationSize;
+        float fraction = sample / (float) populationSize;
         PlayerPopulationData sampleData = new PlayerPopulationData();
         sampleData.populationSize = sample;
         sampleData.energy = Mathf.FloorToInt(fraction * energy);
         sampleData.waste = Mathf.FloorToInt(fraction * waste);
         sampleData.damage = Mathf.FloorToInt(fraction * damage);
-
+        
         return sampleData;
     }
 
@@ -409,7 +409,6 @@ public class PlayerPopulation : AbsNutrientState {
         Debug.Log(string.Format(
             "Import of {0} using {1} energy, extracted {2} which when deposited caused {3} surplus",
             nutrient, energy, extracted, surplus));
-        energy = 0;
     }
 
     private void Start()

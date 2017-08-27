@@ -290,6 +290,8 @@ public class Tile : MonoBehaviour {
 
                 sourcePop.RemoveMigrants(subPop);
                 targetPop.AddMigrants(subPop);
+                targetPop.SetSize(subPop.populationSize);
+
                 Debug.Log("Migrated " + subPop.populationSize + " (" + migration + "/" + realizedSample + ") units for Player " + pId + " from " + name + " to " + migrationTarget.name);
             }
         }
