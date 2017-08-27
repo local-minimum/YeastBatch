@@ -332,17 +332,13 @@ public class PlayerPopulation : AbsNutrientState {
     public void Procreate()
     {
         CalculateDamage();
-
-        data.energy = Mathf.Clamp(data.energy - data.damage, 0, data.populationSize);
-        data.populationSize += data.energy / 10;
-        data.energy /= 4;
+        int energyToIndiviuals = 5;
+        int energy = Mathf.Clamp(data.energy - data.damage, 0, data.populationSize * energyToIndiviuals);
+        data.populationSize += energy / energyToIndiviuals;
+        data.energy = Mathf.Max(0, data.energy - energy / 2);
 
         MakeWaste();
 
-        export = 0;
-        importAA = 0;
-        importC = 0;
-        importN = 0;
     }
 
 
@@ -371,7 +367,6 @@ public class PlayerPopulation : AbsNutrientState {
         data.damage += data.waste / wasteToDamage;
         data.damage += data.populationSize / 100;
         data.damage = Mathf.Max(0, data.damage - maintenance);
-        maintenance = 0;
     }
 
     void CreateEnergy()
@@ -379,17 +374,20 @@ public class PlayerPopulation : AbsNutrientState {
         MediaNutrient C = GetNutrient(Nutrients.C, true);
         MediaNutrient N = GetNutrient(Nutrients.N, true);
         MediaNutrient AA = GetNutrient(Nutrients.AA, true);
+        int cFactor = 5;
+        int nFactor = 2;
+        int aFactor = 1;
 
         int production = Mathf.Min(
-            C.CurrentValue / 20,
-            N.CurrentValue / 3,
-            AA.CurrentValue / 1);
+            C.CurrentValue / cFactor,
+            N.CurrentValue / nFactor,
+            AA.CurrentValue / aFactor);
 
-        C.Extract(production * 20);
-        N.Extract(production * 3);
-        AA.Extract(production);
+        C.Extract(production * cFactor);
+        N.Extract(production * nFactor);
+        AA.Extract(production * aFactor);
 
-        data.energy += production;        
+        data.energy += production * 10;        
     }
 
     void ImportNutrients()
