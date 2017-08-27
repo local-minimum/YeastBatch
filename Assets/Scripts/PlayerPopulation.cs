@@ -275,7 +275,7 @@ public class PlayerPopulation : AbsNutrientState {
         MetabolismOptions meOp;
         if (nutrient == Nutrients.AA)
         {            
-             allowed = Budget(ref importAA, requested, mode == ClampMode.Self);
+            allowed = Budget(ref importAA, requested, mode == ClampMode.Self);
             meOp = MetabolismOptions.ImportAA;
         } else if (nutrient == Nutrients.C)
         {

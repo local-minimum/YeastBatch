@@ -67,10 +67,22 @@ public class Tile : MonoBehaviour {
 
     public void ShowSelectedPopAction(int playerId)
     {
-        if (GetPlayerAction(playerId) == PlayerAction.Population)
+        var playerAction = GetPlayerAction(playerId);
+        if (playerAction == PlayerAction.Population)
         {
             var pop = GetPlayerPopulation(playerId);
             brick.ShowPopAction(pop == null ? ActionMode.None : pop.activeAction);
+        }
+        else if (playerAction == PlayerAction.Diffusion)
+        {
+            brick.ShowDiffusion();
+        }
+        else if (playerAction == PlayerAction.Migration)
+        {
+            brick.ShowMigration(GetMigrationTarget(playerId));
+        } else
+        {
+            brick.ClearPlanIllustration();
         }
     }
 

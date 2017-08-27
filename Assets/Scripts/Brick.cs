@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour {
 
-    public void SetPlayerDominion(int player, float dominon)
-    {
-
-    }
-
     [SerializeField] SpriteRenderer popRend;
 
     Tile tile;
@@ -16,6 +11,7 @@ public class Brick : MonoBehaviour {
 
     private void Start()
     {
+        anim = modeAnim.GetComponent<Animator>();
         tile = GetComponentInParent<Tile>();
         sRend = GetComponent<SpriteRenderer>();
     }
@@ -97,11 +93,10 @@ public class Brick : MonoBehaviour {
         }
         else
         {
-            //popRend.color = new Color(0, 0, 0, 0);
             popRend.gameObject.SetActive(false);
         }
-        //TODO: Use exactly what was planned, not only player action
-        //tile.ShowSelectedPopAction(playerId);
+
+        tile.ShowSelectedPopAction(Match.ActivePlayer);
     }
 
     [SerializeField] GameObject modeAnim;
@@ -198,10 +193,22 @@ public class Brick : MonoBehaviour {
          }
     }
 
-    private void ClearPlanIllustration()
+    public void ClearPlanIllustration()
     {
-        Animator anim = modeAnim.GetComponent<Animator>();
         anim.SetTrigger("None");
+        arrow.Hide();
+
+    }
+
+    public void ShowMigration(Tile target)
+    {
+        anim.SetTrigger("None");
+        arrow.ShowMigration(target.transform);
+    }
+
+    public void ShowDiffusion()
+    {
+        anim.SetTrigger("Diffusion");
         arrow.Hide();
 
     }
@@ -209,6 +216,9 @@ public class Brick : MonoBehaviour {
     [SerializeField] UIMigrationArrow arrow;
 
     TileActions prevAction = TileActions.None;
+
+    Animator anim;
+
     private void IllustrateSelection(Brick target, bool selectionDone)
     {
         TileActions current = GetTileAction(target, selectionDone);
@@ -218,7 +228,6 @@ public class Brick : MonoBehaviour {
             return;
         }
 
-        Animator anim = modeAnim.GetComponent<Animator>();
         switch (current)
         {
             case TileActions.None:
