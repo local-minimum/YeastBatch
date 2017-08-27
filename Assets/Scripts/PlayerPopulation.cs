@@ -125,6 +125,9 @@ public class PlayerPopulation : AbsNutrientState {
     public void SetSize(int size)
     {
         data.populationSize = size;
+        GetNutrient(Nutrients.C, true).SetMax(size * 80);
+        GetNutrient(Nutrients.N, true).SetMax(size * 20);
+        GetNutrient(Nutrients.AA, true).SetMax(size * 10);
     }
 
     public void SetEnergy(int energy)
@@ -397,7 +400,10 @@ public class PlayerPopulation : AbsNutrientState {
     }
 
     void ImportNutrient(MediaNutrient nutrient, ref int energy)
-    {
+    {   if (energy == 0)
+        {
+            return;
+        }
         int extracted = tile.nutrientState.Extract(nutrient.nutrient, Mathf.RoundToInt(energy * (1 + data.populationSize / 80f)));
         int surplus;
         nutrient.Deposit(extracted, out surplus);

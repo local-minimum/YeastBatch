@@ -28,28 +28,41 @@ public class UIPopViewer : MonoBehaviour {
 
     public static void ShowPop(PlayerPopulation pop)
     {
-        _viewer.popSize.text = pop.Size.ToString();
-        _viewer.aaNutr.text = pop.GetNutrientState(Nutrients.AA).ToString();
-        _viewer.cNutr.text = pop.GetNutrientState(Nutrients.C).ToString();
-        _viewer.nNutr.text = pop.GetNutrientState(Nutrients.N).ToString();
-        _viewer.waste.text = pop.GetWasteState().ToString();
-        _viewer.damage.text = pop.GetDamageState().ToString();
-        _viewer.energy.text = pop.GetEnergyState().ToString();
+        var v = viewer;
+        v.popSize.text = pop.Size.ToString();
+        v.aaNutr.text = pop.GetNutrientState(Nutrients.AA).ToString();
+        v.cNutr.text = pop.GetNutrientState(Nutrients.C).ToString();
+        v.nNutr.text = pop.GetNutrientState(Nutrients.N).ToString();
+        v.waste.text = pop.GetWasteState().ToString();
+        v.damage.text = pop.GetDamageState().ToString();
+        v.energy.text = pop.GetEnergyState().ToString();
     }
 
     public static void ClearPop()
     {
-        _viewer.popSize.text = "---";
-        _viewer.aaNutr.text = "---";
-        _viewer.cNutr.text = "---";
-        _viewer.nNutr.text = "---";
-        _viewer.waste.text = "---";
-        _viewer.damage.text = "---";
-        _viewer.energy.text = "---";
+        var v = viewer;
+        v.popSize.text = "---";
+        v.aaNutr.text = "---";
+        v.cNutr.text = "---";
+        v.nNutr.text = "---";
+        v.waste.text = "---";
+        v.damage.text = "---";
+        v.energy.text = "---";
     }
 
     static UIPopViewer _viewer;
 
+    static UIPopViewer viewer
+    {
+        get
+        {
+            if (_viewer == null)
+            {
+                _viewer = FindObjectOfType<UIPopViewer>();
+            }
+            return _viewer;
+        }
+    }
 
 	void Start () {
         _viewer = this;		

@@ -38,9 +38,10 @@ public class MediaNutrient
         {
             if (maxValue == 0)
             {
+                Debug.LogError("There can be no " + name);
                 return 0;
             }
-            return currentValue / maxValue;
+            return currentValue / (float) maxValue;
         }
     }
 
@@ -58,6 +59,7 @@ public class MediaNutrient
     {
         volume = Mathf.Min(currentValue, volume);
         currentValue -= volume;
+        Debug.Log("Extracting for realz " + volume);
         return volume;
     }
 
@@ -69,7 +71,7 @@ public class MediaNutrient
 
     public void Deposit(int volume, out int surplus)
     {
-        Debug.Log(string.Format("{0} volume {1} {2}", volume, currentValue, maxValue));
+        Debug.Log(string.Format("Deposit {0} volume {1} {2}", volume, currentValue, maxValue));
         surplus = Mathf.Max(0, volume - (maxValue - currentValue));
         currentValue = Mathf.Min(maxValue, currentValue + (volume - surplus));
     }
@@ -178,6 +180,7 @@ public class NutrientState : AbsNutrientState {
             return 0;
         }
         int extraction = GetExtractionVolume(mediaNutrient, energy);
+        Debug.Log("Extractin " + extraction);
         return mediaNutrient.Extract(extraction);
     }
 

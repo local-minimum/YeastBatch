@@ -12,24 +12,35 @@ public class Brick : MonoBehaviour {
     [SerializeField] SpriteRenderer popRend;
 
     Tile tile;
+    SpriteRenderer sRend;
 
     private void Start()
     {
         tile = GetComponentInParent<Tile>();
+        sRend = GetComponent<SpriteRenderer>();
     }
-
-    bool overMe = false;
 
     private void OnMouseEnter()
     {
-        overMe = true;
+        sRend.color = new Color(0.8f, .6f, 0.5f);
         UITileStatus.ShowFor(tile);
+        UIPopViewer.ShowPop(tile.GetPlayerPopulation(Match.ActivePlayer));
+        HoverBrick = this;
     }
+
+    bool clearBrickWithDelay;
+    float clearTime;
 
     private void OnMouseExit()
     {
-        overMe = false;
-        UITileStatus.Clear(tile);
+        sRend.color = new Color(1f, 1f, 1f);
+        clearBrickWithDelay = true;
+        clearTime = Time.timeSinceLevelLoad + 0.5f;
+        
+        if (HoverBrick == this)
+        {
+            HoverBrick = null;
+        }
     }
 
     private void OnEnable()
@@ -48,6 +59,10 @@ public class Brick : MonoBehaviour {
         {
             RightSelectBrick = null;
         }
+        if (HoverBrick == this)
+        {
+            HoverBrick = null;
+        }
     }
 
     private void OnDestroy()
@@ -60,6 +75,10 @@ public class Brick : MonoBehaviour {
         if (RightSelectBrick == this)
         {
             RightSelectBrick = null;
+        }
+        if (HoverBrick == this)
+        {
+            HoverBrick = null;
         }
         UITileStatus.Clear(tile);
     }
@@ -88,6 +107,7 @@ public class Brick : MonoBehaviour {
         arrow.Hide();
     }
 
+    static Brick HoverBrick;
     static Brick LeftSelectBrick;
     static Brick RightSelectBrick;
     static float buttonDownTime;
@@ -110,8 +130,7 @@ public class Brick : MonoBehaviour {
 
     private void Update()
     {
-        //TODO: OverMe propagates through UIs
-        if (overMe && !TileCanvas.Showing)
+        if (HoverBrick == this && !TileCanvas.Showing)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -155,6 +174,21 @@ public class Brick : MonoBehaviour {
         {
             TileCanvas.HideIfNotHovered();
         }
+
+        if (clearBrickWithDelay)
+        {
+            if (HoverBrick == null)
+            {
+                if (Time.timeSinceLevelLoad > clearTime)
+                {
+                    UITileStatus.Clear(tile);
+                    clearBrickWithDelay = false;
+                }
+            } else
+            {
+                clearBrickWithDelay = false;
+            }
+         }
     }
 
     private void ClearPlanIllustration()
