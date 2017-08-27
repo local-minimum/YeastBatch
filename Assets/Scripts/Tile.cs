@@ -127,6 +127,11 @@ public class Tile : MonoBehaviour {
     [SerializeField, Range(0, 10)]
     float neighbourRadius = 1;
 
+    public bool IsNeighbour(Tile tile)
+    {
+        return neighbours.Contains(tile);
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.magenta;
@@ -222,6 +227,11 @@ public class Tile : MonoBehaviour {
     List<Tile> migrationTargets = new List<Tile>();
     public void PlanMigration(Tile target)
     {
+        if (!IsNeighbour(target))
+        {
+            return;
+        }
+
         SetPlayerAction(Match.ActivePlayer, PlayerAction.Migration);
         while (Match.ActivePlayer >= migrationTargets.Count)
         {
@@ -253,7 +263,7 @@ public class Tile : MonoBehaviour {
 
         if (!HasNeighbour(migrationTarget) || migrationTarget == null)
         {
-            throw new System.ArgumentException("Destination is not a neighbour");
+            throw new System.ArgumentException(string.Format("Destination {0} is not a neighbour for player {1}", migrationTarget, playerId));
         }
 
         for (int pId = 0, l = playerPopulations.Count; pId < l; pId++)

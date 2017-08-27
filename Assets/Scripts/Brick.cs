@@ -22,6 +22,10 @@ public class Brick : MonoBehaviour {
 
     private void OnMouseEnter()
     {
+        if (UIPopAction.Showing)
+        {
+            return;
+        }
         sRend.color = new Color(0.8f, .6f, 0.5f);
         UITileStatus.ShowFor(tile);
         UIPopViewer.ShowPop(tile.GetPlayerPopulation(Match.ActivePlayer));
@@ -33,6 +37,7 @@ public class Brick : MonoBehaviour {
 
     private void OnMouseExit()
     {
+
         sRend.color = new Color(1f, 1f, 1f);
         clearBrickWithDelay = true;
         clearTime = Time.timeSinceLevelLoad + 0.5f;
@@ -130,7 +135,12 @@ public class Brick : MonoBehaviour {
 
     private void Update()
     {
-        if (HoverBrick == this && !TileCanvas.Showing)
+        if (UIPopAction.Showing)
+        {
+            return;
+        }
+
+        if (HoverBrick == this)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -170,9 +180,6 @@ public class Brick : MonoBehaviour {
                     RightSelectBrick = null;
                 }
             }
-        } else if (TileCanvas.Showing && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
-        {
-            TileCanvas.HideIfNotHovered();
         }
 
         if (clearBrickWithDelay)
@@ -244,8 +251,11 @@ public class Brick : MonoBehaviour {
                 anim.SetTrigger("Diffusion");
                 break;
             case TileActions.Migration:
-                anim.SetTrigger("None");
-                LeftSelectBrick.arrow.ShowMigration(target.transform);
+                if (LeftSelectBrick.tile.IsNeighbour(target.tile))
+                {
+                    anim.SetTrigger("None");
+                    LeftSelectBrick.arrow.ShowMigration(target.transform);
+                }
                 break;
         }
 

@@ -15,7 +15,6 @@ public class PopIcon : MonoBehaviour {
 
     private void OnMouseEnter()
     {
-        //ClickYeast();
         hovered = true;
     }
 
@@ -26,14 +25,12 @@ public class PopIcon : MonoBehaviour {
 
     public void ClickYeast()
     {
-        //TileCanvas.ShowFor(tile);
-        //Brick.SetLeftSelect(tile.brick);
-        Debug.Log("Click");
+        UIPopAction.ShowFor(tile);
     }
 
     private void Update()
     {
-        if (hovered && Input.GetMouseButtonDown(0))
+        if (hovered && !UIPopAction.Showing && Input.GetMouseButtonDown(0))
         {
             ClickYeast();
         }
