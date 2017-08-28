@@ -136,6 +136,23 @@ public class Board : MonoBehaviour {
         return totalSizes;
     }
 
+    public int[,] GetPlayerPopulationsPerTile()
+    {
+        Tile[] tiles = GetComponentsInChildren<Tile>();
+        int nTiles = tiles.Length;
+        int players = Match.TotalPlayers;
+        int[,] pops = new int[nTiles, players];
+        for (int idTile = 0; idTile < nTiles; idTile++)
+        {
+            for (int player = 0; player < players; player++)
+            {
+                pops[idTile, player] = tiles[idTile].GetPlayerPopulation(player).Size;
+            }
+        }
+
+        return pops;
+    }
+
     [SerializeField] Tile[] startTiles;
 
     public void SetupGame(int nPlayers)

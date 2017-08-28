@@ -40,6 +40,9 @@ public class Match : MonoBehaviour {
     [SerializeField]
     Board board;
 
+    [SerializeField]
+    UIWinMeters winMeters;
+
     private void Start()
     {
         _match = this;
@@ -49,6 +52,8 @@ public class Match : MonoBehaviour {
         board.SetMediaComposition();
         board.CastMedia();
         SetPlayerTurn(activePlayer);
+        winMeters.UpdateWinner(board);
+        winMeters.SetPlayerColors(players[0].playerColor, players[1].playerColor);
         
     }
 
@@ -68,6 +73,7 @@ public class Match : MonoBehaviour {
 
             activePlayer = 0;
             SetPlayerTurn(activePlayer);
+            winMeters.UpdateWinner(board);
         }
     }
 
