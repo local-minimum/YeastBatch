@@ -331,13 +331,21 @@ public class PlayerPopulation : AbsNutrientState {
 
     public void Procreate()
     {
-        CalculateDamage();
+        if (Tile.allowProcreationAsAction)
+        {
+            CalculateDamage();
+        }
+
         int energyToIndiviuals = 5;
-        int energy = Mathf.Clamp(data.energy - data.damage, 0, data.populationSize * energyToIndiviuals);
+        int maxScale = 2;
+        int energy = Mathf.Clamp(data.energy - data.damage, 0, maxScale * data.populationSize * energyToIndiviuals);
         data.populationSize += energy / energyToIndiviuals;
         data.energy = Mathf.Max(0, data.energy - energy / 2);
 
-        MakeWaste();
+        if (Tile.allowProcreationAsAction)
+        {
+            MakeWaste();
+        }
 
     }
 
