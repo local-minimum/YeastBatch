@@ -13,8 +13,19 @@ public class Tile : MonoBehaviour {
     [HideInInspector]
     public Brick brick;
 
-    [HideInInspector]
-    public NutrientState nutrientState;
+    NutrientState _nutrientState;
+
+    public NutrientState nutrientState
+    {
+        get
+        {
+            if (_nutrientState == null)
+            {
+                _nutrientState = GetComponent<NutrientState>();
+            }
+            return _nutrientState;
+        }
+    }
 
     List<PlayerPopulation> playerPopulations = new List<PlayerPopulation>();
 
@@ -27,9 +38,16 @@ public class Tile : MonoBehaviour {
                 return playerPopulations[i];
             }
         }
-        PlayerPopulation pop = gameObject.AddComponent<PlayerPopulation>();
-        pop.playerId = playerId;
-        playerPopulations.Add(pop);
+        playerPopulations.AddRange(
+            GetComponents<PlayerPopulation>()
+                .Where(e => !playerPopulations.Contains(e)));
+        PlayerPopulation pop = playerPopulations.FirstOrDefault(e => e.playerId == playerId);
+        if (pop == null)
+        {
+            pop = gameObject.AddComponent<PlayerPopulation>();
+            pop.playerId = playerId;
+            playerPopulations.Add(pop);
+        }
         return pop;
     }
 
@@ -131,8 +149,7 @@ public class Tile : MonoBehaviour {
 
     private void Start()
     {
-        brick = GetComponentInChildren<Brick>();
-        nutrientState = GetComponent<NutrientState>();
+        brick = GetComponentInChildren<Brick>();        
         SetNeighbours();
     }
 
@@ -192,11 +209,7 @@ public class Tile : MonoBehaviour {
     {
         if (nutrientState == null)
         {
-            nutrientState = GetComponent<NutrientState>();
-        }
-        if (nutrientState == null)
-        {
-            nutrientState = gameObject.AddComponent<NutrientState>();
+            _nutrientState = gameObject.AddComponent<NutrientState>();
         }
         nutrientState.CopyMax(media);
         nutrientState.CopyDiffusion(media);
@@ -295,7 +308,7 @@ public class Tile : MonoBehaviour {
                 targetPop.AddMigrants(subPop);
                 targetPop.SetSize(targetPop.Size);
 
-                Debug.Log("Migrated " + subPop.populationSize + " (" + migration + "/" + realizedSample + ") units for Player " + pId + " from " + name + " to " + migrationTarget.name);
+                //Debug.Log("Migrated " + subPop.populationSize + " (" + migration + "/" + realizedSample + ") units for Player " + pId + " from " + name + " to " + migrationTarget.name);
             }
         }
     }
@@ -311,7 +324,7 @@ public class Tile : MonoBehaviour {
             dominionColor = Color.white;
         } else if (popOne == popTwo)
         {
-            dominionColor = Color.Lerp(playerOne, playerTwo, 0.5f);
+            dominionColor = Color.gray;
         } else if (popOne > popTwo)
         {
             dominionColor = playerOne;

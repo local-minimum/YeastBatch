@@ -299,9 +299,12 @@ public class Brick : MonoBehaviour {
             {
                 return Tile.allowDiffusionAsAction ? TileActions.NotYetDiffusion : TileActions.None;
             }
-        } else 
+        } else if (this.tile.HasPopulation(Match.ActivePlayer))
         {
             return TileActions.Migration;
+        } else
+        {
+            return TileActions.None;
         }
     }
 

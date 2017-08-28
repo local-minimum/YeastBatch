@@ -43,8 +43,12 @@ public class Match : MonoBehaviour {
     [SerializeField]
     UIWinMeters winMeters;
 
+    [SerializeField]
+    GameObject ui;
+
     private void Start()
     {
+        ui.SetActive(true);
         _match = this;
         players = Player.GetPlayers();
         totalPlayers = players.Length;

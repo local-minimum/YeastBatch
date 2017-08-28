@@ -59,13 +59,13 @@ public class MediaNutrient
     {
         volume = Mathf.Min(currentValue, volume);
         currentValue -= volume;
-        Debug.Log("Extracting for realz " + volume);
+        //Debug.Log("Extracting for realz " + volume);
         return volume;
     }
 
     public int Extract(float volume)
     {
-        Debug.Log(string.Format("Extracting {0} from {1}", volume, currentValue));
+        //Debug.Log(string.Format("Extracting {0} from {1}", volume, currentValue));
         return Extract(Mathf.FloorToInt(volume * currentValue));
     }
 

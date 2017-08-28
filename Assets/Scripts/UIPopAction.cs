@@ -37,6 +37,32 @@ public class UIPopAction : MonoBehaviour {
         _showing = true;
     }
 
+    public void MaxOut()
+    {
+        float factor = 0;
+        foreach (Slider s in metabolismSliders)
+        {
+            factor += s.value;        
+        }
+
+        if (factor > 0)
+        {
+            factor = 1f / factor;
+            
+            foreach (Slider s in metabolismSliders)
+            {
+                s.value *= factor;
+            }
+        } else
+        {
+            factor = 1f / (float) metabolismSliders.Length;
+            foreach (Slider s in metabolismSliders)
+            {
+                s.value = factor;
+            }
+        }
+    }
+
     public void HideView()
     {
         _view.SetActive(false);

@@ -51,17 +51,20 @@ public class UIWinMeters : MonoBehaviour {
         for (int tile=0; tile<tiles; tile++)
         {
             int idBest = -1;
-            int best = 0;
+            int best = -1;
 
             for (int player = 0; player<players; player++)
             {
                 if (pops[tile, player] > best)
                 {
                     best = pops[tile, player];
-                    if (best > minPopForDominion)
+                    if (best > minPopForDominion && idBest > -2)
                     {
                         idBest = player;
                     }
+                } else if (pops[tile, player] == best)
+                {
+                    idBest = -2;
                 }
             }
 
