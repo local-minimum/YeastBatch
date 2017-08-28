@@ -196,10 +196,10 @@ public class Board : MonoBehaviour {
         {
             foreach (int playerId in tile.GetPlayerIndexBySize())
             {
-                if (tile.GetPlayerAction(playerId) == PlayerAction.Population)
+                if (tile.GetPlayerAction(playerId) == PlayerAction.Population || !Tile.allowProcreationAsAction)
                 {
                     PlayerPopulation pop = tile.GetPlayerPopulation(playerId);
-                    if (pop.activeAction == ActionMode.Procreation)
+                    if (pop.activeAction == ActionMode.Procreation || !Tile.allowProcreationAsAction)
                     {
                         Debug.Log("Procreate " + playerId + " on tile " + tile.name);
                         pop.Procreate();
@@ -225,17 +225,38 @@ public class Board : MonoBehaviour {
 
     public void EnactDiffusion()
     {
-        
-        foreach (Tile tile in GetComponentsInChildren<Tile>().OrderBy(e => e.GetTotalPopulationSize()))
+        if (Tile.allowDiffusionAsAction)
         {
-            for (int i = 0, l = Match.TotalPlayers; i < l; i++)
+            foreach (Tile tile in GetComponentsInChildren<Tile>().OrderBy(e => e.GetTotalPopulationSize()))
             {
-                if (tile.GetPlayerAction(i) == PlayerAction.Diffusion)
+                for (int i = 0, l = Match.TotalPlayers; i < l; i++)
                 {
-                    tile.DiffuseMedia();
+                    if (tile.GetPlayerAction(i) == PlayerAction.Diffusion)
+                    {
+                        tile.DiffuseMedia();
+                    }
                 }
-            }
 
+            }
+        } else
+        {
+            int diffusers = 2;
+            foreach (Tile tile in GetComponentsInChildren<Tile>()
+                .Select(e => new { rnd = Random.value, tile = e })
+                .OrderBy(e => e.rnd)
+                .Select(e => e.tile)
+                .Take(diffusers))
+            {
+                tile.DiffuseMedia();
+            }
+        }        
+    }
+
+    public void SetDominionColors(Color playerOne, Color playerTwo)
+    {
+        foreach (Tile tile in GetComponentsInChildren<Tile>())
+        {
+            tile.SetDominionColor(playerOne, playerTwo);
         }
     }
 }

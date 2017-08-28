@@ -7,6 +7,9 @@ public enum PlayerAction { None, Population, Migration, Diffusion};
 
 public class Tile : MonoBehaviour {
 
+    static public bool allowDiffusionAsAction = false;
+    static public bool allowProcreationAsAction = false;
+
     [HideInInspector]
     public Brick brick;
 
@@ -296,4 +299,27 @@ public class Tile : MonoBehaviour {
             }
         }
     }
+
+    public void SetDominionColor(Color playerOne, Color playerTwo)
+    {
+        int popOne = GetPopulationSize(0);
+        int popTwo = GetPopulationSize(1);
+
+        Color dominionColor;
+        if (popOne == 0 && popTwo == 0)
+        {
+            dominionColor = Color.white;
+        } else if (popOne == popTwo)
+        {
+            dominionColor = Color.Lerp(playerOne, playerTwo, 0.5f);
+        } else if (popOne > popTwo)
+        {
+            dominionColor = playerOne;
+        } else
+        {
+            dominionColor = playerTwo;
+        }
+        brick.SetDominionColor(dominionColor);
+    }
 }
+ 

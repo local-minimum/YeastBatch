@@ -309,12 +309,12 @@ public class PlayerPopulation : AbsNutrientState {
     {
         ImportNutrients();
 
-        CalculateDamage();
-
         CreateEnergy();
 
         MakeWaste();
         ExportWaste();
+
+        CalculateDamage();
     }
 
     int maintenance;
@@ -356,17 +356,21 @@ public class PlayerPopulation : AbsNutrientState {
 
     void ExportWaste()
     {
-        data.waste = Mathf.Max(0, data.waste - export);
+        data.waste = Mathf.RoundToInt(Mathf.Max(0, data.waste - export * exportPerMaint));
+
         export = 0;
     }
+
+    float exportPerMaint = 0.3f;
+    float dmgReductionPerMaint = 0.8f;
 
     int wasteToDamage = 3;
 
     void CalculateDamage()
     {
-        data.damage += data.waste / wasteToDamage;
-        data.damage += data.populationSize / 100;
-        data.damage = Mathf.Max(0, data.damage - maintenance);
+        data.damage += Mathf.RoundToInt(data.waste / (float) wasteToDamage);
+        data.damage += Mathf.RoundToInt(data.populationSize / 100f);
+        data.damage = Mathf.RoundToInt(Mathf.Max(0, data.damage - maintenance * dmgReductionPerMaint));
     }
 
     void CreateEnergy()

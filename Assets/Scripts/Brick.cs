@@ -7,14 +7,23 @@ public class Brick : MonoBehaviour {
     [SerializeField] SpriteRenderer popRend;
 
     Tile tile;
-    SpriteRenderer sRend;
+    SpriteRenderer brickRend;
+    public void SetDominionColor(Color dominionColor)
+    {
+        this.dominionColor = Color.Lerp(Color.white, dominionColor, 0.5f);
+        brickRend.color = this.dominionColor;
+    }
 
     private void Start()
     {
         anim = modeAnim.GetComponent<Animator>();
         tile = GetComponentInParent<Tile>();
-        sRend = GetComponent<SpriteRenderer>();
+        brickRend = GetComponent<SpriteRenderer>();
+        brickRend = GetComponent<SpriteRenderer>();
     }
+
+    Color dominionColor;
+    Color hoverColor = new Color(0.3f, .3f, 0.5f);
 
     private void OnMouseEnter()
     {
@@ -22,7 +31,7 @@ public class Brick : MonoBehaviour {
         {
             return;
         }
-        sRend.color = new Color(0.8f, .6f, 0.5f);
+        brickRend.color = hoverColor;
         UITileStatus.ShowFor(tile);
         UIPopViewer.ShowPop(tile.GetPlayerPopulation(Match.ActivePlayer));
         HoverBrick = this;
@@ -34,7 +43,7 @@ public class Brick : MonoBehaviour {
     private void OnMouseExit()
     {
 
-        sRend.color = new Color(1f, 1f, 1f);
+        brickRend.color = dominionColor;
         clearBrickWithDelay = true;
         clearTime = Time.timeSinceLevelLoad + 0.5f;
         
@@ -282,13 +291,13 @@ public class Brick : MonoBehaviour {
         {
             if (Time.timeSinceLevelLoad - buttonDownTime > pressForDiffusion)
             {
-                return TileActions.Diffusion;
+                return Tile.allowDiffusionAsAction ? TileActions.Diffusion : TileActions.None;
             } else if (selectionDone)
             {
                 return TileActions.None;
             } else
             {
-                return TileActions.NotYetDiffusion;
+                return Tile.allowDiffusionAsAction ? TileActions.NotYetDiffusion : TileActions.None;
             }
         } else 
         {

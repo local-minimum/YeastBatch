@@ -54,7 +54,8 @@ public class Match : MonoBehaviour {
         SetPlayerTurn(activePlayer);
         winMeters.UpdateWinner(board);
         winMeters.SetPlayerColors(players[0].playerColor, players[1].playerColor);
-        
+        board.SetDominionColors(players[0].playerColor, players[1].playerColor);
+
     }
 
     void _EndTurn()
@@ -70,10 +71,17 @@ public class Match : MonoBehaviour {
             board.EnactProcreation();
             board.EnactMigration();
             board.EnactDiffusion();
-
+            board.SetDominionColors(players[0].playerColor, players[1].playerColor);
             activePlayer = 0;
-            SetPlayerTurn(activePlayer);
-            winMeters.UpdateWinner(board);
+            Winner winner = winMeters.UpdateWinner(board);
+            if (winner != Winner.None)
+            {
+                Debug.LogError(winner);
+            } else
+            {
+                SetPlayerTurn(activePlayer);
+
+            }
         }
     }
 
