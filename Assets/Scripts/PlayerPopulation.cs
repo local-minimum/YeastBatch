@@ -337,7 +337,7 @@ public class PlayerPopulation : AbsNutrientState {
         }
 
         int energyToIndiviuals = 5;
-        int maxScale = 2;
+        int maxScale = 3;
         int energy = Mathf.Clamp(data.energy - data.damage, 0, maxScale * data.populationSize * energyToIndiviuals);
         data.populationSize += energy / energyToIndiviuals;
         data.energy = Mathf.Max(0, data.energy - energy / 2);

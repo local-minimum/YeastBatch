@@ -201,7 +201,7 @@ public class Board : MonoBehaviour {
                     PlayerPopulation pop = tile.GetPlayerPopulation(playerId);
                     if (pop.activeAction == ActionMode.Procreation || !Tile.allowProcreationAsAction)
                     {
-                        Debug.Log("Procreate " + playerId + " on tile " + tile.name);
+                        //Debug.Log("Procreate " + playerId + " on tile " + tile.name);
                         pop.Procreate();
                     }
                 }
@@ -258,5 +258,20 @@ public class Board : MonoBehaviour {
         {
             tile.SetDominionColor(playerOne, playerTwo);
         }
+    }
+
+    public void RebalanceMetabolism()
+    {
+        for (int playerID = 0; playerID < Match.TotalPlayers; playerID++)
+        {
+            foreach (Tile tile in GetComponentsInChildren<Tile>())
+            {
+                if (tile.HasPopulation(playerID))
+                {
+                    UIPopAction.Rebalance(tile, playerID);
+                }
+            }
+        }
+
     }
 }

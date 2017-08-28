@@ -33,8 +33,20 @@ public class UIPopAction : MonoBehaviour {
         _instance._view.SetActive(true);
         _instance._editingTile = tile;
         _instance._editingPop = tile.GetPlayerPopulation(Match.ActivePlayer);
-        _instance.UpdateSliders();
+        UIPopViewer.ShowPop(_instance._editingPop);
+
+        _instance.MaxOut();
         _showing = true;
+    }
+
+    public static void Rebalance(Tile tile, int playerId)
+    {
+        _instance._editingTile = tile;
+        _instance._editingPop = tile.GetPlayerPopulation(playerId);
+        _instance.UpdateSliders();
+        _instance.MaxOut();
+        _instance._editingPop = null;
+        _instance._editingTile = null;
     }
 
     public void MaxOut()
@@ -61,6 +73,8 @@ public class UIPopAction : MonoBehaviour {
                 s.value = factor;
             }
         }
+
+        UpdateSliders();
     }
 
     public void HideView()

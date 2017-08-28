@@ -59,7 +59,7 @@ public class Match : MonoBehaviour {
         winMeters.UpdateWinner(board);
         winMeters.SetPlayerColors(players[0].playerColor, players[1].playerColor);
         board.SetDominionColors(players[0].playerColor, players[1].playerColor);
-
+        board.RebalanceMetabolism();
     }
 
     void _EndTurn()
@@ -75,6 +75,8 @@ public class Match : MonoBehaviour {
             board.EnactProcreation();
             board.EnactMigration();
             board.EnactDiffusion();
+
+            board.RebalanceMetabolism();
             board.SetDominionColors(players[0].playerColor, players[1].playerColor);
             activePlayer = 0;
             Winner winner = winMeters.UpdateWinner(board);

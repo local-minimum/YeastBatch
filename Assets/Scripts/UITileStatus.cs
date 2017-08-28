@@ -42,7 +42,8 @@ public class UITileStatus : MonoBehaviour {
     static Tile _tile;
 
 	void Start () {
-        _instance = this;		
+        _instance = this;
+        Clear();
 	}
 
     private void OnDestroy()

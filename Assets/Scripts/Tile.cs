@@ -296,6 +296,10 @@ public class Tile : MonoBehaviour {
 
         for (int pId = 0, l = playerPopulations.Count; pId < l; pId++)
         {
+            if (pId != playerId)
+            {
+                continue;
+            }
             PlayerPopulation sourcePop = GetPlayerPopulation(pId);
             PlayerPopulation targetPop = migrationTarget.GetPlayerPopulation(pId);
             int migration = (sourcePop.Size - targetPop.Size) / migrationFraction;
