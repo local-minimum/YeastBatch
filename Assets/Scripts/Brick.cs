@@ -6,21 +6,36 @@ public class Brick : MonoBehaviour {
 
     [SerializeField] SpriteRenderer popRend;
 
-    Tile tile;
-    SpriteRenderer brickRend;
+    Tile tile {
+        get
+        {
+            if (_tile == null)
+            {
+                _tile = GetComponentInParent<Tile>();
+            }
+            return _tile;
+        }
+    }
+    Tile _tile;
+
+    SpriteRenderer brickRend
+    {
+        get
+        {
+            if (_brickRend == null)
+            {
+                _brickRend = GetComponent<SpriteRenderer>();
+            }
+            return _brickRend;
+        }
+    }
+    SpriteRenderer _brickRend;
+
     public void SetDominionColor(Color dominionColor)
     {
         brickRend.color = Color.Lerp(Color.white, dominionColor, 0.5f);
     }
-
-    private void Start()
-    {
-        anim = modeAnim.GetComponent<Animator>();
-        tile = GetComponentInParent<Tile>();
-        brickRend = GetComponent<SpriteRenderer>();
-        brickRend = GetComponent<SpriteRenderer>();
-    }      
-
+   
     private void OnMouseEnter()
     {
         if (UIPopAction.Showing)
@@ -249,7 +264,18 @@ public class Brick : MonoBehaviour {
 
     TileActions prevAction = TileActions.None;
 
-    Animator anim;
+    Animator anim {
+        get
+        {
+            if (_anim == null)
+            {
+                _anim = modeAnim.GetComponent<Animator>();
+            }
+            return _anim;
+        }
+    }
+
+    Animator _anim;
 
     private void IllustrateSelection(Brick target, bool selectionDone)
     {

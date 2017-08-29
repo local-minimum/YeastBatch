@@ -5,12 +5,25 @@ using UnityEngine;
 public class UIMigrationArrow : MonoBehaviour {
 
     Transform tileTransf;
-    SpriteRenderer sRend;
+    SpriteRenderer sRend
+    {
+        get
+        {
+            if (_sRend == null)
+            {
+                _sRend = GetComponent<SpriteRenderer>();
+            }
+            return _sRend;
+        }
+    }
+
+    SpriteRenderer _sRend;
+
 
     private void Start()
     {
         tileTransf = transform.parent;
-        sRend = GetComponent<SpriteRenderer>();
+        _sRend = GetComponent<SpriteRenderer>();
         Hide();
     }
 
