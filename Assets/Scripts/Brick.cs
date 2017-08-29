@@ -10,8 +10,7 @@ public class Brick : MonoBehaviour {
     SpriteRenderer brickRend;
     public void SetDominionColor(Color dominionColor)
     {
-        this.dominionColor = Color.Lerp(Color.white, dominionColor, 0.5f);
-        brickRend.color = this.dominionColor;
+        brickRend.color = Color.Lerp(Color.white, dominionColor, 0.5f);
     }
 
     private void Start()
@@ -20,10 +19,7 @@ public class Brick : MonoBehaviour {
         tile = GetComponentInParent<Tile>();
         brickRend = GetComponent<SpriteRenderer>();
         brickRend = GetComponent<SpriteRenderer>();
-    }
-
-    Color dominionColor;
-    Color hoverColor = new Color(0.3f, .3f, 0.5f);
+    }      
 
     private void OnMouseEnter()
     {
@@ -31,7 +27,7 @@ public class Brick : MonoBehaviour {
         {
             return;
         }
-        brickRend.color = hoverColor;
+        UITileSelector.ShowFor(transform);
         UITileStatus.ShowFor(tile);
         UIPopViewer.ShowPop(tile.GetPlayerPopulation(Match.ActivePlayer));
         HoverBrick = this;
@@ -42,8 +38,7 @@ public class Brick : MonoBehaviour {
 
     private void OnMouseExit()
     {
-
-        brickRend.color = dominionColor;
+        
         clearBrickWithDelay = true;
         clearTime = Time.timeSinceLevelLoad + 0.5f;
         
@@ -51,6 +46,15 @@ public class Brick : MonoBehaviour {
         {
             HoverBrick = null;
         }
+    }
+
+    private void OnMouseOver()
+    {
+        if (UIPopAction.Showing)
+        {
+            return;
+        }
+        UITileSelector.ShowFor(transform);    
     }
 
     private void OnEnable()
@@ -156,8 +160,15 @@ public class Brick : MonoBehaviour {
             {
                 if (Input.GetMouseButtonUp(0))
                 {
-                    LeftSelectBrick.IllustrateSelection(this, true);
-                    LeftSelectBrick.SetTileAction(this);
+                    if (HoverBrick == LeftSelectBrick)
+                    {
+                        UIPopAction.ShowFor(tile);
+                    }
+                    else
+                    {
+                        LeftSelectBrick.IllustrateSelection(this, true);
+                        LeftSelectBrick.SetTileAction(this);
+                    }
 
                 }
                 else if (Input.GetMouseButton(0))

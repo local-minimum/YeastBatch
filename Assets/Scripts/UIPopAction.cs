@@ -29,24 +29,26 @@ public class UIPopAction : MonoBehaviour {
 
     public static void ShowFor(Tile tile)
     {
+        var i = instance;
         UITileStatus.ShowFor(tile);
-        _instance._view.SetActive(true);
-        _instance._editingTile = tile;
-        _instance._editingPop = tile.GetPlayerPopulation(Match.ActivePlayer);
-        UIPopViewer.ShowPop(_instance._editingPop);
+        i._view.SetActive(true);
+        i._editingTile = tile;
+        i._editingPop = tile.GetPlayerPopulation(Match.ActivePlayer);
+        UIPopViewer.ShowPop(i._editingPop);
 
-        _instance.MaxOut();
+        i.MaxOut();
         _showing = true;
     }
 
     public static void Rebalance(Tile tile, int playerId)
     {
-        _instance._editingTile = tile;
-        _instance._editingPop = tile.GetPlayerPopulation(playerId);
-        _instance.UpdateSliders();
-        _instance.MaxOut();
-        _instance._editingPop = null;
-        _instance._editingTile = null;
+        var i = instance;
+        i._editingTile = tile;
+        i._editingPop = tile.GetPlayerPopulation(playerId);
+        i.UpdateSliders();
+        i.MaxOut();
+        i._editingPop = null;
+        i._editingTile = null;
     }
 
     public void MaxOut()

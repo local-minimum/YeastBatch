@@ -65,7 +65,8 @@ public class UIPopViewer : MonoBehaviour {
     }
 
 	void Start () {
-        _viewer = this;		
+        _viewer = this;
+        ClearPop();
 	}
 
     private void OnDisable()
@@ -77,8 +78,4 @@ public class UIPopViewer : MonoBehaviour {
     {
         _viewer = null;
     }
-
-    void Update () {
-		
-	}
 }
