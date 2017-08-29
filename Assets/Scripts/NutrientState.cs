@@ -136,6 +136,11 @@ public abstract class AbsNutrientState : MonoBehaviour
         return GetNutrient(nutrient, true).CurrentValue;
     }
 
+    public float GetSaturation(Nutrients nutrient)
+    {
+        return GetNutrient(nutrient, true).saturation;
+    }
+
     public void CopyMax(NutrientState media)
     {
         for (int i = 0, l = media.nutrients.Count; i < l; i++)

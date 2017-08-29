@@ -17,8 +17,8 @@ public class UIPopViewer : MonoBehaviour {
     [SerializeField]
     Text nNutr;
 
-    [SerializeField]
-    Text waste;
+    //[SerializeField]
+    //Text waste;
 
     [SerializeField]
     Text damage;
@@ -33,7 +33,7 @@ public class UIPopViewer : MonoBehaviour {
         v.aaNutr.text = pop.GetNutrientState(Nutrients.AA).ToString();
         v.cNutr.text = pop.GetNutrientState(Nutrients.C).ToString();
         v.nNutr.text = pop.GetNutrientState(Nutrients.N).ToString();
-        v.waste.text = pop.GetWasteState().ToString();
+        //v.waste.text = pop.GetWasteState().ToString();
         v.damage.text = pop.GetDamageState().ToString();
         v.energy.text = pop.GetEnergyState().ToString();
     }
@@ -45,7 +45,7 @@ public class UIPopViewer : MonoBehaviour {
         v.aaNutr.text = "---";
         v.cNutr.text = "---";
         v.nNutr.text = "---";
-        v.waste.text = "---";
+        //v.waste.text = "---";
         v.damage.text = "---";
         v.energy.text = "---";
     }
