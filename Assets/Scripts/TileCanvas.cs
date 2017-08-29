@@ -261,12 +261,6 @@ public class TileCanvas : MonoBehaviour {
         }        
     }
 
-    public void ShowSliderTooltip(Slider me)
-    {
-        MetabolismSlider mSlider = me.GetComponent<MetabolismSlider>();
-        //mSlider.tooltip;
-    }
-
     static bool hovered;
 
     private void OnMouseOver()
