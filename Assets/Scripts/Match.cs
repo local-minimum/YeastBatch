@@ -82,7 +82,7 @@ public class Match : MonoBehaviour {
             Winner winner = winMeters.UpdateWinner(board);
             if (winner != Winner.None)
             {
-                Debug.LogError(winner);
+                UIWinner.SetWinner(winner);
             } else
             {
                 SetPlayerTurn(activePlayer);

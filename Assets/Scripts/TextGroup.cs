@@ -59,7 +59,7 @@ public class TextGroup : MonoBehaviour {
         for (int i = 0; i < items.Length; i++)
         {
             items[i].resizeTextForBestFit = false;
-            items[i].fontSize = size;
+            items[i].fontSize = size + 3;
         }
         updateFit = false;
     }

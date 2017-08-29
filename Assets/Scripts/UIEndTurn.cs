@@ -41,4 +41,9 @@ public class UIEndTurn : MonoBehaviour {
         actionButton.interactable = false;
         Match.EndTurn();
     }
+
+    public static void SetInteractable(bool value)
+    {
+        FindObjectOfType<UIEndTurn>().actionButton.interactable = value;
+    }
 }

@@ -9,9 +9,19 @@ public class Tile : MonoBehaviour {
 
     static public bool allowDiffusionAsAction = false;
     static public bool allowProcreationAsAction = false;
-
-    [HideInInspector]
-    public Brick brick;
+    
+    public Brick brick
+    {
+        get
+        {
+            if (_brick == null)
+            {
+                _brick = GetComponentInChildren<Brick>();
+            }
+            return _brick;
+        }
+    }
+    Brick _brick;
 
     NutrientState _nutrientState;
 
@@ -149,7 +159,6 @@ public class Tile : MonoBehaviour {
 
     private void Start()
     {
-        brick = GetComponentInChildren<Brick>();        
         SetNeighbours();
     }
 

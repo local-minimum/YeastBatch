@@ -54,6 +54,10 @@ public class Brick : MonoBehaviour {
         {
             return;
         }
+        if (HoverBrick != this)
+        {
+            HoverBrick = this;
+        }
         UITileSelector.ShowFor(transform);    
     }
 
@@ -143,17 +147,25 @@ public class Brick : MonoBehaviour {
 
     private void Update()
     {
-        if (UIPopAction.Showing)
+        if (UIPopAction.Showing || UIWinner.hasWinner)
         {
             return;
         }
 
         if (HoverBrick == this)
         {
+            bool hasPop = tile.HasPopulation(Match.ActivePlayer);
+
             if (Input.GetMouseButtonDown(0))
             {
-                LeftSelectBrick = this;
-                buttonDownTime = Time.timeSinceLevelLoad;                
+                if (hasPop)
+                {
+                    LeftSelectBrick = this;
+                    buttonDownTime = Time.timeSinceLevelLoad;
+                } else
+                {
+                    LeftSelectBrick = null;
+                }
             }
 
             if (LeftSelectBrick)
@@ -169,7 +181,7 @@ public class Brick : MonoBehaviour {
                         LeftSelectBrick.IllustrateSelection(this, true);
                         LeftSelectBrick.SetTileAction(this);
                     }
-
+                    LeftSelectBrick = null;
                 }
                 else if (Input.GetMouseButton(0))
                 {
@@ -243,11 +255,6 @@ public class Brick : MonoBehaviour {
     {
         TileActions current = GetTileAction(target, selectionDone);
 
-        if (current == prevAction)
-        {
-            return;
-        }
-
         switch (current)
         {
             case TileActions.None:
@@ -310,7 +317,7 @@ public class Brick : MonoBehaviour {
             {
                 return Tile.allowDiffusionAsAction ? TileActions.NotYetDiffusion : TileActions.None;
             }
-        } else if (this.tile.HasPopulation(Match.ActivePlayer))
+        } else if (tile.HasPopulation(Match.ActivePlayer) && tile.IsNeighbour(other.tile))
         {
             return TileActions.Migration;
         } else
