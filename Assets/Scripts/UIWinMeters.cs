@@ -2,6 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct DominionData
+{
+    public float playerOne;
+    public float playerTwo;
+
+    public DominionData(float playerOne, float playerTwo)
+    {
+        this.playerOne = playerOne;
+        this.playerTwo = playerTwo;
+    }
+}
+
+public struct DominionStatus
+{
+    public DominionData tiles;
+    public DominionData population;
+
+    public DominionStatus(float tilesPlayerOne, float tilesPlayerTwo, float popPlayerOne, float popPlayerTwo)
+    {
+        tiles = new DominionData(tilesPlayerOne, tilesPlayerTwo);
+        population = new DominionData(popPlayerOne, popPlayerTwo);
+    }
+}
+
 public class UIWinMeters : MonoBehaviour {
 
     [SerializeField]
@@ -28,6 +52,11 @@ public class UIWinMeters : MonoBehaviour {
             return tileDominonWinner;
         }
         return Winner.None;
+    }
+
+    public DominionStatus GetDominions()
+    {
+        return new DominionStatus(tileDominion.PlayerOne, tileDominion.PlayerTwo, popSize.PlayerOne, popSize.PlayerTwo);
     }
 
     Winner UpdateAndGetPopSizeWinner(Board board)

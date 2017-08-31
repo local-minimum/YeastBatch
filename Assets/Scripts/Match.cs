@@ -48,6 +48,7 @@ public class Match : MonoBehaviour {
 
     private void Start()
     {
+        Input.simulateMouseWithTouches = true;
         ui.SetActive(true);
         _match = this;
         players = Player.GetPlayers();
@@ -71,6 +72,7 @@ public class Match : MonoBehaviour {
         }
         else
         {
+            _turn++;
             board.EnactMetabolism();
             board.EnactProcreation();
             board.EnactMigration();
@@ -88,6 +90,15 @@ public class Match : MonoBehaviour {
                 SetPlayerTurn(activePlayer);
 
             }
+        }
+    }
+
+    static int _turn = 0;
+    public static int turn
+    {
+        get
+        {
+            return _turn;
         }
     }
 
